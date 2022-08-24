@@ -3,7 +3,7 @@
     Date: 8/23/22
     Description: Different sorting algorithms
 """
-
+from random import shuffle
 #-----------------------------------------------------------------------------#
 def makeList(N):
     L = []
@@ -17,13 +17,11 @@ def mySort(L):
     """ my sorting algorithm goes here """
     print("in mySort()")
 
-    MOVE_PRESENT = True
+    MOVE_NEEDED = True
 
-    print(L)
-
-    while MOVE_PRESENT:
+    while MOVE_NEEDED:
+        numMoves = 0
         for i in range(len(L)):
-            numMoves = 0
             val1 = L[i]
 
             if i == len(L) - 1:
@@ -31,31 +29,22 @@ def mySort(L):
             else:
                 val2 = L[i + 1]
 
-            print(val1, val2, val1 > val2)
-            if val1 > val2:
-                if i == len(L) - 1:
-                    L[i] = val2
-                    L[0] = val1
-                else:
-                    L[i] = val2
-                    L[i+1] = val1
+            if val1 > val2 and i < len(L) - 1:
+                L[i] = val2
+                L[i+1] = val1
                 numMoves += 1
 
-            if numMoves == 0:
-                MOVE_PRESENT = False
-
-            print(numMoves == 0)
-            print(L)
+        if numMoves == 0:
+            MOVE_NEEDED = False
 
 
 #-----------------------------------------------------------------------------#
 if __name__ == "__main__":
-    from random import shuffle
 
     N = 2000
-    # L = makeList(N)
+    L = makeList(N)
 
-    # shuffle(L)
-    L = [3, 1, 7, 2]
+    shuffle(L)
     mySort(L)
     assert L == makeList(N)
+    print(L == makeList(N))
