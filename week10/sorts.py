@@ -3,7 +3,6 @@
     Date: 8/23/22
     Description: Different sorting algorithms
 """
-from random import shuffle
 #-----------------------------------------------------------------------------#
 def makeList(N):
     L = []
@@ -40,6 +39,7 @@ def mySort(L):
 
 #-----------------------------------------------------------------------------#
 if __name__ == "__main__":
+    from random import shuffle
 
     N = 2000
     L = makeList(N)
