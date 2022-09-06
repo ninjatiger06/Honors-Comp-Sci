@@ -6,18 +6,19 @@
 """
 
 from searches import *
+from time import time
 
 def readStopWords():
 	"""
-		Purpose: reads in the stop words file
+		Purpose: Reads in the stop words file
 		Parameters: None
 		Returns: A List of all the stop words
 	"""
 	stopWordsFile = open("stopwords.txt", 'r')
 	stopWordsLst = []
 	for line in stopWordsFile:
+		line = line.strip()
 		stopWordsLst.append(line)
-
 	return stopWordsLst
 
 def readReviews():
@@ -26,12 +27,11 @@ def readReviews():
 		Parameters: None
 		Returns: None
 	"""
-	reviewsFile = open('smallReviews.txt', 'r')
+	reviewsFile = open('movieReviews.txt', 'r')
 	allReviews = []
 
 	# read in each review
 	for line in reviewsFile:
-
 		# clean up the review
 		line = line.strip().lower()
 		lineLst = line.split()
@@ -46,20 +46,65 @@ def readReviews():
 		stopWords = readStopWords()
 
 		for word in review:
-			# get rid of non-alpha characters
-			if word.isalpha() == False:
-				review.remove(word)
+			# get rid of non-alpha characters and stop words
+			if word.isalpha() == True and binarySearch(word, stopWords) == False:
+				WORD_PRESENT = False
+				i = 0
+				for i in range(len(allReviews)):
+					if word == allReviews[i][1]:
+						WORD_PRESENT = True
+						break
 
-			# if the word is a stop words, remove it from the review
-			if binarySearch(word, stopWords):
-				review.remove(word)
-			else:
-				if word not in allReviews:
+				if WORD_PRESENT == True:
+					allReviews[i][0] += score
+
+				else:
 					allReviews.append([score, word])
 
-	print(allReviews)
+	# for review in allReviews:
+	# 	print(review[0], review[1])
+	sortReviews(allReviews)
+
+
+def sortReviews(allReviews):
+	"""
+		Purpose: Sorts the list of review words by score and prints the top and
+				 bottom 20
+		Parameters: The list of words and their scores (list of lists)
+		Returns: None
+	"""
+	# for i in range(1, len(allReviews)):
+	# 	marker = allReviews[i][1][0]
+	# 	j = i-1
+	# 	while j >= 0 and marker > allReviews[j][1][0]:
+	# 		allReviews[j+1] = allReviews[j]
+	# 		j -= 1
+	# 	allReviews[j+1] = marker
+
+	for i in range(1, len(allReviews)):
+		marker = allReviews[i]
+		j = i-1
+		while j >= 0 and marker > allReviews[j]:
+			allReviews[j+1] = allReviews[j]
+			j -= 1
+		allReviews[j+1] = marker
+
+	if len(allReviews) > 20:
+		for i in range(20):
+			print(allReviews[i][0], allReviews[i][1])
+
+		for i in range(len(allReviews)-21, len(allReviews)-1):
+			print(allReviews[i][0], allReviews[i][1])
+	else:
+		for review in allReviews:
+			print(review[0], review[1])
+
+
 def main():
+	t1 = time()
 	readReviews()
+	t2 = time()
+	print("\nTime: %8.4f" % (t2-t1))
 
 
 main()
