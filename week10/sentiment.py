@@ -8,26 +8,27 @@
 from searches import *
 from time import time
 
-def readStopWords():
+def readStopWords(fileName):
 	"""
 		Purpose: Reads in the stop words file
-		Parameters: None
+		Parameters: The file name/path of the filter list
 		Returns: A List of all the stop words
 	"""
-	stopWordsFile = open("stopwords.txt", 'r')
+	stopWordsFile = open(fileName, 'r')
+	# create a list of all the stop words
 	stopWordsLst = []
 	for line in stopWordsFile:
 		line = line.strip()
 		stopWordsLst.append(line)
 	return stopWordsLst
 
-def readReviews():
+def readReviews(fileName, stopWords):
 	"""
 		Purpose: Reads in the reviews file and calls other functions to look at the lines
-		Parameters: None
-		Returns: None
+		Parameters: The file name for the reviews file and the list of stop words
+		Returns: A list of filtered words and their scores
 	"""
-	reviewsFile = open('movieReviews.txt', 'r')
+	reviewsFile = open(fileName, 'r')
 	allReviews = []
 
 	# read in each review
@@ -42,12 +43,12 @@ def readReviews():
 		# get the rest of the words in the review
 		review = lineLst[1:]
 
-		# read in the stop words
-		stopWords = readStopWords()
-
 		for word in review:
 			# get rid of non-alpha characters and stop words
 			if word.isalpha() == True and binarySearch(word, stopWords) == False:
+				# check if the word is already in the list of allReviews and get the index
+
+				# Make this a function
 				WORD_PRESENT = False
 				i = 0
 				for i in range(len(allReviews)):
@@ -55,18 +56,18 @@ def readReviews():
 						WORD_PRESENT = True
 						break
 
+				# if the word is already in the list, add the scores
 				if WORD_PRESENT == True:
 					allReviews[i][0] += score
 
+				# if the word isn't in the list, add it and its score
 				else:
 					allReviews.append([score, word])
 
-	# for review in allReviews:
-	# 	print(review[0], review[1])
-	sortReviews(allReviews)
+	return allReviews
 
 
-def sortReviews(allReviews):
+def sortReviews(wordSentiments):
 	"""
 		Purpose: Sorts the list of review words by score and prints the top and
 				 bottom 20
@@ -81,28 +82,47 @@ def sortReviews(allReviews):
 	# 		j -= 1
 	# 	allReviews[j+1] = marker
 
-	for i in range(1, len(allReviews)):
-		marker = allReviews[i]
+	# sorting all the reviews by score (greatest to least)
+	for i in range(1, len(wordSentiments)):
+		marker = wordSentiments[i]
 		j = i-1
-		while j >= 0 and marker > allReviews[j]:
-			allReviews[j+1] = allReviews[j]
+		# if the marker is greater than the current index (because greatest --> least)
+		while j >= 0 and marker > wordSentiments[j]:
+			wordSentiments[j+1] = wordSentiments[j]
 			j -= 1
-		allReviews[j+1] = marker
+		wordSentiments[j+1] = marker
 
-	if len(allReviews) > 20:
+	return
+
+
+def printReviews(wordSentiments):
+	"""
+		Purpose: Formats and prints the top and bottom 20 reviews
+		Parameters: List of all the reviews (list of lists)
+		Returns: None
+	"""
+	# only printing the top and bottom 20 if the list is longer than 40
+	if len(wordSentiments) > 40:
+		# print the top 20 reviews
 		for i in range(20):
-			print(allReviews[i][0], allReviews[i][1])
-
-		for i in range(len(allReviews)-21, len(allReviews)-1):
-			print(allReviews[i][0], allReviews[i][1])
+			print(wordSentiments[i][0], wordSentiments[i][1])
+		print("\n")
+		# print the bottom 20 reviews
+		for i in range(len(wordSentiments)-20, len(wordSentiments)):
+			print(wordSentiments[i][0], wordSentiments[i][1])
 	else:
+		# print all the reviews
 		for review in allReviews:
 			print(review[0], review[1])
 
 
 def main():
+	# timing program
 	t1 = time()
-	readReviews()
+	stopWords = readStopWords("stopwords.txt")
+	wordSentiments = readReviews("movieReviews.txt", stopWords)
+	sortReviews(wordSentiments)
+	printReviews(wordSentiments)
 	t2 = time()
 	print("\nTime: %8.4f" % (t2-t1))
 

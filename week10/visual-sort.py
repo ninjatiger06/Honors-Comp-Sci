@@ -18,6 +18,7 @@ def makeList(N):
 		Returns: A list of numbers
 	"""
 	L = []
+	# create the list of numbers up to the given number
 	for i in range(N):
 		L.append(i)
 	return L
@@ -28,20 +29,33 @@ def selectionSort(L):
 		Parameters: An unsorted list (list of integers)
 		Returns: None
 	"""
+	# the maximum number of times the list can have something to sort is the
+		# length of the list - 1
 	for i in range(len(L)-1):
 		print("Current list arrangement: ", L)
+
+		# the smallest number is automatically the first index in the "unsorted" list
 		minIdx = i + 1
-		# print("The minimum index is currently: %i, and the value at that index is %i" % (minIdx, L[minIdx]))
+
+		# iterate through the unsorted list
 		for j in range(i, len(L)):
-			# print("\tWithin the small list, at index %i with value %i" % (j, L[j]))
-			# print("\tIs the current value less than the set minimum value? (T/F)", L[j] < L[minIdx])
+
+			# check if the value at the current index is smaller than the current
+				# smallest value
 			if L[j] < L[minIdx]:
-				# print("\t\tIt is smaller, so the new smallest number is now at index %i with a value of %i" % (minIdx, L[minIdx]))
+				# if it is, the current index becomes the index of the smallest value
 				minIdx = j
 		print("The smallest value is %i and index %i" %(L[minIdx], minIdx))
-		# print("Now put the smallest value at the beginning of the unsorted list")
+
+		# swap the places of the smallest value and position 0 of the unsorted list
 		L[i], L[minIdx] = L[minIdx], L[i]
-		print("Now the smallest value swaps places with the value at index 0 of the unsorted list\n", L, "\n\n")
+
+		# all the prints!
+		print("Now the smallest value swaps places with the value at index 0 of the unsorted list\n", L, "\n")
+
+		# scuffed keydown because I don't want to re-learn it right now
+		input("Press enter to continue... ")
+		print("\n\n")
 	print("No more swaps left, so the sort is complete")
 
 	return
@@ -50,6 +64,8 @@ def main():
 	from random import shuffle
 
 	printIntro()
+
+	# Get how long the list should be from the user
 	N = int(input("Length of list (N): "))
 	L = makeList(N)
 	shuffle(L)
