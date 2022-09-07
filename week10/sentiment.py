@@ -46,25 +46,42 @@ def readReviews(fileName, stopWords):
 		for word in review:
 			# get rid of non-alpha characters and stop words
 			if word.isalpha() == True and binarySearch(word, stopWords) == False:
-				# check if the word is already in the list of allReviews and get the index
 
-				# Make this a function
-				WORD_PRESENT = False
-				i = 0
-				for i in range(len(allReviews)):
-					if word == allReviews[i][1]:
-						WORD_PRESENT = True
-						break
+				# check if the word is already in the list of allReviews and get the index
+				WORD_PRESENT, wordIdx = isWordPresent(word, allReviews)
 
 				# if the word is already in the list, add the scores
 				if WORD_PRESENT == True:
-					allReviews[i][0] += score
+					allReviews[wordIdx][0] += score
 
 				# if the word isn't in the list, add it and its score
 				else:
 					allReviews.append([score, word])
 
 	return allReviews
+
+
+def isWordPresent(word, allReviews):
+	"""
+		Purpose: Checks if a given word is already present within the allReviews
+				 list. If it is present the index is returned
+		Parameters: The word being checked (string) and the list of words and
+					their sentiments (list of lists)
+		Returns: Whether or not the word is present (boolean) and if present,
+				 its index
+	"""
+	WORD_PRESENT = False
+	wordIdx = -1
+
+	# Iterating through all the reviews to search
+	for i in range(len(allReviews)):
+
+		# Checking if the word is in the "word" index of the sentiment
+		if word == allReviews[i][1]:
+			WORD_PRESENT = True
+			wordIdx = i
+			break     # Don't need to keep searching once the word is found
+	return WORD_PRESENT, wordIdx
 
 
 def sortReviews(wordSentiments):
@@ -74,25 +91,18 @@ def sortReviews(wordSentiments):
 		Parameters: The list of words and their scores (list of lists)
 		Returns: None
 	"""
-	# for i in range(1, len(allReviews)):
-	# 	marker = allReviews[i][1][0]
-	# 	j = i-1
-	# 	while j >= 0 and marker > allReviews[j][1][0]:
-	# 		allReviews[j+1] = allReviews[j]
-	# 		j -= 1
-	# 	allReviews[j+1] = marker
-
-	# sorting all the reviews by score (greatest to least)
+	# Sorting all the reviews by score (greatest to least)
 	for i in range(1, len(wordSentiments)):
 		marker = wordSentiments[i]
 		j = i-1
-		# if the marker is greater than the current index (because greatest --> least)
+		# If the marker is greater than the current index (because greatest --> least)
 		while j >= 0 and marker > wordSentiments[j]:
+			# Moving the sentiment
 			wordSentiments[j+1] = wordSentiments[j]
 			j -= 1
 		wordSentiments[j+1] = marker
 
-	return
+	return     # Nothing to return because the list has been edited
 
 
 def printReviews(wordSentiments):
