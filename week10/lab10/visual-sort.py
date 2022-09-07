@@ -2,7 +2,7 @@ def printIntro():
 	"""
 		Purpose: Prints introductory spiel to explain how sorting works
 		Parameters: None
-		Returns: None
+		Return Val: None
 	"""
 	print("Welcome to visual-sort.py")
 	print("This program is going to visualize the selection sorting algorithm")
@@ -15,7 +15,7 @@ def makeList(N):
 	"""
 		Purpose: Makes a numbered list of an inputted length
 		Parameters: Length of the list (integer)
-		Returns: A list of numbers
+		Return Val: A list of numbers
 	"""
 	L = []
 	# create the list of numbers up to the given number
@@ -27,7 +27,7 @@ def selectionSort(L):
 	"""
 		Purpose: Sorts a given list and prints out the steps to sorting
 		Parameters: An unsorted list (list of integers)
-		Returns: None
+		Return Val: None
 	"""
 	# the maximum number of times the list can have something to sort is the
 		# length of the list - 1
@@ -36,13 +36,18 @@ def selectionSort(L):
 
 		# the smallest number is automatically the first index in the "unsorted" list
 		minIdx = i + 1
+		print("The current smallest value is %i at index %i\n" % (L[minIdx], minIdx))
 
 		# iterate through the unsorted list
 		for j in range(i, len(L)):
-
+			print("\n" + "-" * L[minIdx], "[%i] <-- minimum" % (L[minIdx]))
+			print("-" * L[j], "[%i]" % (L[j]))
+			print("Current Value (%i) < Minimum Value (%i): %r" % (L[j], L[minIdx], L[j] < L[minIdx]))
 			# check if the value at the current index is smaller than the current
 				# smallest value
 			if L[j] < L[minIdx]:
+				print("%i at index %i is smaller than %i, so it become the new smallest value"
+						% (L[j], j, L[minIdx]))
 				# if it is, the current index becomes the index of the smallest value
 				minIdx = j
 		print("The smallest value is %i and index %i" %(L[minIdx], minIdx))
