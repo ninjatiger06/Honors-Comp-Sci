@@ -113,14 +113,16 @@ def printReviews(wordSentiments):
 	"""
 	# only printing the top and bottom 20 if the list is longer than 40
 	if len(wordSentiments) > 40:
+		print("Top 20:")
 		# print the top 20 reviews
 		for i in range(20):
 			print(wordSentiments[i][0], wordSentiments[i][1])
-		print("\n")
+		print("\nBottom 20:")
 		# print the bottom 20 reviews
 		for i in range(len(wordSentiments)-20, len(wordSentiments)):
 			print(wordSentiments[i][0], wordSentiments[i][1])
 	else:
+		print("All Reviews:")
 		# print all the reviews
 		for review in allReviews:
 			print(review[0], review[1])
