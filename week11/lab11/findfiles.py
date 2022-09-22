@@ -4,9 +4,7 @@ from os.path import isdir, expanduser
 def findFiles(path, pattern):
 	contents = listdir(path)
 	for item in contents:
-		print(item)
-		if isdir(item):
-			print("here")
+		if isdir(path + "/" + item):
 			newPath = path + "/" + item
 			findFiles(newPath, pattern)
 		else:
