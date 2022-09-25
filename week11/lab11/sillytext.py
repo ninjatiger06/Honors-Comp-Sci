@@ -9,7 +9,7 @@ def sillyfy(str, num):
 	"""
 	Description: Function recursively copies a specific character within an
 				 ever-shrinking string
-	Parameters: The string and the number of times to copy each character
+	Parameters: The string (str) and the number of times to copy each character (int)
 	Returns: String of all the copied characters
 	"""
 

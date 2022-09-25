@@ -21,8 +21,8 @@ def removeChar(str, ch):
 
 def main():
 
-	str = input("string: ")
-	ch = input("ch: ")
+	str = input("string: ").lower()
+	ch = input("ch: ").lower()
 	while len(ch) != 1:
 		print("\nInvalid. Please enter a single character")
 		ch = input("ch: ")
