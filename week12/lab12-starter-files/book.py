@@ -30,6 +30,28 @@ class Book(object):
 		""" getter for the year published """
 		return self.publishYear
 
+	def getFilename(self):
+		""" getter for the file name """
+		return self.filePath
+
+	def getBookmark(self):
+		""" getter for the bookmark """
+		return self.bookmark
+
+	def setBookmark(self, pageNum):
+		""" setter for bookmark """
+		self.bookmark = pageNum
+
+	def getText(self):
+		""" getter for the full text """
+		bookLines = ""
+		with open(self.filePath, 'r') as file:
+			for line in file:
+				if line[0] != "#":
+					bookLines += line + "\n"
+
+		return bookLines
+
 
 if __name__ == '__main__':
 
