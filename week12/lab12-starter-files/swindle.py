@@ -79,6 +79,18 @@ class Swindle(object):
             else:                               # return to previous page in the book
                 book.setBookmark(currentPage-1)
         return
+    def buy():
+
+    def showOwned():
+
+        print(self.ownedBooks())
+
+
+    def getOwner():
+
+
+
+    def read():
 
 
     ###  MORE METHODS TO BE COMPLETED BY YOU  ###
