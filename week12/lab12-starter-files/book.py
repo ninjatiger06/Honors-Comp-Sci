@@ -6,7 +6,7 @@ class Book(object):
 		 	year the book was published"""
 		self.title = title
 		self.author = author
-		self.publishYear = publishYear
+		self.publishYear = int(publishYear)
 		self.filePath = filePath
 		self.bookmark = 0
 
@@ -48,8 +48,7 @@ class Book(object):
 		with open(self.filePath, 'r') as file:
 			for line in file:
 				if line[0] != "#":
-					bookLines += line + "\n"
-
+					bookLines += line
 		return bookLines
 
 
