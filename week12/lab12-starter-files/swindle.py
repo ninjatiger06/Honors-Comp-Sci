@@ -8,6 +8,7 @@ def readBookDatabase(filename):
 	availableBooks = []
 	for book in infile:
 		# books have their important data split by commas
+		book = book.strip()
 		book = book.split(",")
 		title = book[0]
 		author = book[1]
@@ -73,6 +74,7 @@ class Swindle(object):
 			currentPage = book.getBookmark()
 			choice = self.getLetter()       # user chooses to quit or read the next/previous page
 			if choice == "q":               # quit reading and return to ereader
+				book.setBookmark(currentPage)
 				return book
 			elif choice == "n":                 # move on to the next page in the book
 				bookContents = book.getText()   # unless user is on the last page
@@ -87,7 +89,19 @@ class Swindle(object):
 		return
 
 	def buy(self):
-		pass
+		self.showAvailable()
+		while True:
+			buyNum = int(input("Which book would you like to buy? (0 to skip): "))
+			if buyNum > 0:
+				if buyNum <= len(self.availableBooks):
+					boughtBook = self.availableBooks.pop(buyNum - 1)
+					self.ownedBooks.append(boughtBook)
+					print("Purchase successful, bought %s" % (boughtBook))
+					break
+				else:
+					print("Invalid entry, try again")
+			else:
+				break
 
 	def showOwned(self):
 		"""This method allows the user to see which books they own"""
@@ -107,11 +121,17 @@ class Swindle(object):
 
 
 	def read(self):
-		pass
-
-	###  MORE METHODS TO BE COMPLETED BY YOU  ###
-
-
+		self.showOwned()
+		while True:
+			readNum = int(input("which book would you like to read? (0 to skip): "))
+			if readNum > 0:
+				if readNum <= len(self.ownedBooks):
+					self.displayText(self.ownedBooks[readNum - 1])
+					break
+				else:
+					print("Invalid entry, try again")
+			else:
+				break
 
 
 if __name__ == '__main__':
@@ -130,4 +150,10 @@ if __name__ == '__main__':
 	################ Write additional tests below ###################
 
 	print("Testing getOwner...")
-	mySwindle.getOwner()
+	print(myswindle.getOwner())
+
+	print("Testing buy...")
+	myswindle.buy()
+
+	print("Testing read...")
+	myswindle.read()
