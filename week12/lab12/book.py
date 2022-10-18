@@ -55,30 +55,24 @@ class Book(object):
 if __name__ == '__main__':
 
 	print("Testing the Book class...")
-
 	myBook = Book("Gettysburg Address", "Abe Lincoln", 1863,
 	"book-database/gettysburg.txt")
 
 	print("Testing print...")
-
 	print(myBook)
 
 	print("Testing toString...")
-
 	print(myBook.toString())
 
 	print("Testing getFilename...")
-
 	print(myBook.getFilename())
 
 	print("Testing getText...")
-
 	text = myBook.getText()
 	print(text[:105])                   # only print the first couple of lines
 
 	print("bookmark is:", myBook.getBookmark())
-	
 	myBook.setBookmark(12)
 	print("now bookmark is:", myBook.getBookmark())
 
-	################ Write additional tests below ###################
+
