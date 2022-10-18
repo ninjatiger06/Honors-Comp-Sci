@@ -109,13 +109,13 @@ class Swindle(object):
 		"""This method allows the user to see which books they own"""
 		print("Books you own:")
 		for i in range(len(self.ownedBooks)):
-			print("%d: %s" % (i+1, Book.toString(self.ownedBooks[i])))
+			print("%d: %s" % (i+1, self.ownedBooks[i].toString()))
 
 
 	def showAvailable(self):
 		print("Available books:")
 		for i in range(len(self.availableBooks)):
-			print("%d: %s" % (i+1, Book.toString(self.availableBooks[i])))
+			print("%d: %s" % (i+1, self.availableBooks[i].toString()))
 
 
 	def getOwner(self):
