@@ -26,7 +26,7 @@ def mainMenu():
 def main():
 
 	owner = newUser()                   # Display instructions and get user's name
-	userSwindle = Swindle(owner)        # Create a new Swindle ereader for them
+	userSwindle = Swindle(owner, [], 20)        # Create a new Swindle ereader for them
 
 	while True:
 		menuChoice = mainMenu()         # Display ereader's main menu
