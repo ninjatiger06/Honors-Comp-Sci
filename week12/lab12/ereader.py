@@ -37,7 +37,9 @@ def main():
 		elif menuChoice == 3:
 			userSwindle.read()          # Choose a book to read
 		else:
-			writeSettings()                       # Turn off ereader (quit the program)
+			break
+		# else:
+		# 	writeSettings()                       # Turn off ereader (quit the program)
 
 
 main()
