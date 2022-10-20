@@ -15,9 +15,9 @@ def readBookDatabase(filename):
 		publishYear = book[2]
 		bookPath = book[3]
 		availableBooks.append(Book(title, author, publishYear, bookPath))
+	infile.close()	
 	return availableBooks
 
-	def readSettings()
 
 
 class Swindle(object):
@@ -34,7 +34,7 @@ class Swindle(object):
 	def __str__(self):
 		""" pretty-print info about this object """
 		###  TO BE COMPLETED BY YOU  ###
-		s = ""
+		s = "" #print owner's name, and number of owned/ available books 
 		return s
 
 	def getLetter(self):
@@ -87,33 +87,18 @@ class Swindle(object):
 				else:
 					print("\nThere are no more pages. Enter 'p' to go to the previous page or 'q' to quit.")
 			else:                               # return to previous page in the book
-				book.setBookmark(currentPage-1)
+				book.setBookmark(currentPage - 1) #putsh this in read 
 		return
-
-	def buy(self):
-		self.showAvailable()
-		while True:
-			buyNum = int(input("Which book would you like to buy? (0 to skip): "))
-			if buyNum > 0:
-				if buyNum <= len(self.availableBooks):
-					boughtBook = self.availableBooks.pop(buyNum - 1)
-					self.ownedBooks.append(boughtBook)
-					print("Purchase successful, bought %s" % (boughtBook))
-					break
-				else:
-					print("Invalid entry, try again")
-			else:
-				break
 
 	def showOwned(self):
 		"""This method allows the user to see which books they own"""
-		print("Books you own:")
+		print("\nBooks you own:")
 		for i in range(len(self.ownedBooks)):
-			print("%d: %s" % (i+1, self.ownedBooks[i].toString()))
+			print("%d: %s" % (i+1, self.ownedBook[i].toString()))
 
 
 	def showAvailable(self):
-		print("Available books:")
+		print("\nAvailable books:")
 		for i in range(len(self.availableBooks)):
 			print("%d: %s" % (i+1, self.availableBooks[i].toString()))
 
@@ -122,12 +107,48 @@ class Swindle(object):
 		return self.owner
 
 
+	def buy(self):
+	#getVa;id Integer for buy fucntion as well
+	self.showAvailable()
+	while True:
+		buyNum = int(input("\nWhich book would you like to buy? (0 to skip): "))
+		if buyNum > 0:
+			if buyNum <= len(self.availableBooks):
+				boughtBook = self.availableBooks.pop(buyNum - 1)
+				self.ownedBooks.append(boughtBook)
+				print("Purchase successful, bought %s" % (boughtBook.toString()))
+				break
+			else:
+				print("Invalid entry, try again")
+		else:
+			break
+
 	def read(self):
+		
+		#make a get integer function (beetween 0 an length), pass the propmpt and low/high values for acccetable b=nums
+		#we are missing a bookmark condition 
 		self.showOwned()
+		getInteger("which book would you like to read? (0 to skip): ", 0, len(self.ownedBooks))
+
+		if num >= 1:
+			#user selected a book to read 
+			myBook = self.ownedBooks[readNum - 1]
+			self.displayText(myBook)
+			print("Setting bookmark in %s at page %i" %(myBook.getTitle(), myBook.getBookmark()))
+
+
+			mybook.setBookmark()
+
 		while True:
 			readNum = int(input("which book would you like to read? (0 to skip): "))
 			if readNum > 0:
+				#make a 
+				#REMOVE 
+				myBook = self.ownedBooks[readNum - 1]
+
+
 				if readNum <= len(self.ownedBooks):
+
 					self.displayText(self.ownedBooks[readNum - 1])
 					break
 				else:

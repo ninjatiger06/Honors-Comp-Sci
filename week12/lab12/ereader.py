@@ -20,26 +20,7 @@ def mainMenu():
 				print("invalid number, try again")
 		except ValueError:
 			print("invalid input, try again")
-'''
-def writeSettings()
 
-
-
-
-	openFile = open("test.txt", "a")
-
-	settingList = []
-	settingList.append(Swindle.getOwner())
-
-	for i in
-	bookmark = book.getBookmark()
-	showOwned =  Swindle.ownedBooks()
-	showAvailable = Swindle
-
-'''
-
-	openFile.write(" %s \n %s \n %s \n " % (name, bookmark, showOwned, showAvailable))
-	break
 
 
 def main():
