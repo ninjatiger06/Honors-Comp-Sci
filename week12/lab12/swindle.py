@@ -76,7 +76,7 @@ class Swindle(object):
 			currentPage = book.getBookmark()
 			choice = self.getLetter()       # user chooses to quit or read the next/previous page
 			if choice == "q":               # quit reading and return to ereader
-				book.setBookmark(currentPage)
+				quitReading(currentPage, book)
 				return book
 			elif choice == "n":                 # move on to the next page in the book
 				bookContents = book.getText()   # unless user is on the last page
@@ -89,6 +89,9 @@ class Swindle(object):
 			else:                               # return to previous page in the book
 				book.setBookmark(currentPage - 1) #putsh this in read
 		return
+
+	def quitReading(self, page, book):
+		book.setBookmark(page)
 
 	def showOwned(self):
 		"""This method allows the user to see which books they own"""
@@ -123,16 +126,33 @@ class Swindle(object):
 			else:
 				break
 
+	def getInteger(self, prompt, low, high):
+		"""
+		Purpose: To ensure that the user enters a whole number thats greater than 0
+		Parameters: Prompt from the user and lowest value
+		Returns: valid number (int)
+		"""
+		while True:
+			userInput = input(prompt)
+			try:
+				num = int(userInput)
+				if high >= num >= low: 
+					return num 
+				else:
+					print("Invalid entry: Must be greater than 0")
+			except ValueError:
+				print("Invalid entry: Must be a number")
+
 	def read(self):
 
 		#make a get integer function (beetween 0 an length), pass the propmpt and low/high values for acccetable b=nums
 		#we are missing a bookmark condition
 		self.showOwned()
-		getInteger("which book would you like to read? (0 to skip): ", 0, len(self.ownedBooks))
+		num = self.getInteger("which book would you like to read? (0 to skip): ", 0, len(self.ownedBooks))
 
 		if num >= 1:
 			#user selected a book to read
-			myBook = self.ownedBooks[readNum - 1]
+			myBook = self.ownedBooks[num - 1]
 			self.displayText(myBook)
 			print("Setting bookmark in %s at page %i" %(myBook.getTitle(), myBook.getBookmark()))
 
