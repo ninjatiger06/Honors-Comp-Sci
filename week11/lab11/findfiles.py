@@ -29,17 +29,20 @@ def findFiles(path, pattern):
 
 	contents = listdir(path)     # get a list of everything in the file
 	for item in contents:     # iterate through said list
-		if isdir(path + "/" + item):     # check if there's child directory to search through
-			newPath = path + "/" + item
+		newPath = path + "/" + item
+		if isdir(newPath):     # check if there's child directory to search through
 			findFiles(newPath, pattern)     # recursively search through the child directory
 		else:
 			if pattern in item:
-				print(path + "/" + item)
+				print(newPath)
+
+	return
 
 def main():
 
 	path = input("path: ")
 	pattern = input("pattern: ")
+	print("\n")
 
 	# if the user uses the linux "home" shortcut, the path needs to be expanded
 	if "~/" in path:

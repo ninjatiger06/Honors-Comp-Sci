@@ -75,6 +75,8 @@ def recurseShape(gw, centerPoint, size, recurseNum):
 		recurseShape(gw, Point(centerPoint.getX() - size*1.5, centerPoint.getY() + size*1.5), size/2, recurseNum -1)
 		recurseShape(gw, Point(centerPoint.getX() + size*1.5, centerPoint.getY() + size*1.5), size/2, recurseNum -1)
 
+	return
+
 def main():
 
 	# width = int(input("window width: "))

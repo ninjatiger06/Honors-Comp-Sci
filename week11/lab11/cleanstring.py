@@ -4,7 +4,21 @@ Description: This program recursively searches through a user-inputted string
 Date: 9/19/22
 Author: Jonas Pfefferman '24
 """
-def removeChar(str, ch):
+
+def getChar():
+	"""
+		Description: Makes sure that the user inputs only a single character
+		Parameters: None
+		Returns: User's inputted character (string)
+	"""
+	ch = input("ch: ").lower()
+	while len(ch) != 1:
+		print("\nInvalid. Please enter a single character")
+		ch = input("ch: ")
+
+	return ch
+
+def removeChar(strInput, ch):
 	"""
 		Description: Takes in a string and removes the first instance of a
 					 specific character
@@ -12,22 +26,24 @@ def removeChar(str, ch):
 		Returns: The string with the first instance of the character removed
 	"""
 
-	if len(str) <= 1:
-		return str
+	if len(strInput) < 1:
+		return strInput
 	else:
+		if strInput[0].lower() == ch:
+			return removeChar(strInput[1:], ch)
+		else:
+			return strInput[0] + removeChar(strInput[1:], ch)
 		# if the first character is the one to remove, its value will become 0 (false)
-		return str[0] * (str[0] != ch) + removeChar(str[1:], ch)
+		return strInput[0] * (strInput[0] != ch) + removeChar(strInput[1:], ch)
 
 
 def main():
 
-	str = input("string: ").lower()
-	ch = input("ch: ").lower()
-	while len(ch) != 1:
-		print("\nInvalid. Please enter a single character")
-		ch = input("ch: ")
+	strInput = input("string: ")
+	ch = getChar()
 
-	print(removeChar(str, ch))
+	cleanedString = removeChar(strInput, ch)
+	print("\n" + cleanedString)
 
 
 main()
