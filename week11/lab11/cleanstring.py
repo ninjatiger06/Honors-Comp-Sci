@@ -5,20 +5,22 @@ Date: 9/19/22
 Author: Jonas Pfefferman '24
 """
 
-def getChar():
+def getChar(prompt):
 	"""
 		Description: Makes sure that the user inputs only a single character
-		Parameters: None
+		Parameters: Prompt to give the user to request their input (string)
 		Returns: User's inputted character (string)
 	"""
-	ch = input("ch: ").lower()
-	while len(ch) != 1:
-		print("\nInvalid. Please enter a single character")
-		ch = input("ch: ")
+	while True:
+		ch = input(prompt).lower()
+		if len(ch) == 1:
+			return ch
+		else:
+			print("\nInvalid. Please enter a single character")
 
 	return ch
 
-def removeChar(strInput, ch):
+def removeChar(text, ch):
 	"""
 		Description: Takes in a string and removes the first instance of a
 					 specific character
@@ -26,24 +28,23 @@ def removeChar(strInput, ch):
 		Returns: The string with the first instance of the character removed
 	"""
 
-	if len(strInput) < 1:
-		return strInput
+	if len(text) < 1:
+		return text
 	else:
-		if strInput[0].lower() == ch:
-			return removeChar(strInput[1:], ch)
+		if text[0] == ch:
+			return removeChar(text[1:], ch)
 		else:
-			return strInput[0] + removeChar(strInput[1:], ch)
-		# if the first character is the one to remove, its value will become 0 (false)
-		return strInput[0] * (strInput[0] != ch) + removeChar(strInput[1:], ch)
+			return text[0] + removeChar(text[1:], ch)
 
 
 def main():
 
-	strInput = input("string: ")
-	ch = getChar()
+	text = input("string: ")
+	prompt = "ch: "
+	ch = getChar(prompt)
 
-	cleanedString = removeChar(strInput, ch)
-	print("\n" + cleanedString)
+	cleanedString = removeChar(text, ch)
+	print("\n%s" % (cleanedString))
 
 
 main()

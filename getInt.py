@@ -1,10 +1,3 @@
-"""
-Description: This program takes in a string and a number and recursively copies
-			 each charcater of the string the given number of times.
-Date: 9/19/22
-Author: Jonas Pfefferman '24
-"""
-
 def getInt(prompt, minVal, maxVal):
 	"""
 	Purpose: Checks to see if the user-input matches with the minimum and maximum
@@ -27,7 +20,7 @@ def inputInteger(prompt):
 	"""
 	Purpose: Asks for the user's input then runs a try/except to see if it works
 			 as an integer
-	Parameters: Question prompt asking their user for their input (string)
+	Parameters: Question prompt (string)
 	Return Value: User-input in the correct data type (integer)
 	"""
 	while True:
@@ -38,33 +31,7 @@ def inputInteger(prompt):
 		except ValueError:
 			print("\nThat is not a valid integer.")
 
-def repeatChar(strInput, num):
-	"""
-	Description: Function recursively copies a specific character within an
-				 ever-shrinking string
-	Parameters: The string (str) and the number of times to copy each character (int)
-	Returns: String of all the copied characters
-	"""
-
-	# once the string is down to one character or less, function is done copying
-	if len(strInput) < 1:
-		return strInput # if the string is already one character, make sure to clone it
-	else:
-		return strInput[0] * num + repeatChar(strInput[1:], num) # send back the next characters to be copied
-
-
 #------------------------------------------------------------------------------#
 
 def main():
-
-	# getting user inputs
-	strInput = input("string: ")
-	promptStr = "num: "
-	num = getInt(promptStr, 0, 10000000000)
-
-	repeatedString = repeatChar(strInput, num)
-	print("\n%s" % (repeatedString))
-
-
-
-main()
+	userInt = getInt("test prompt", 0, 100)
