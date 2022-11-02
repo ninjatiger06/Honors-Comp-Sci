@@ -4,7 +4,7 @@
 				 word, the program can show which words relate to the highest
 				 opinions and which to the lowest.
 	Author: Jonas Pfefferman '24
-	Date: 8/30/22
+	Date: 11/2/22
 """
 
 from searches import *
@@ -35,77 +35,67 @@ def readReviews(fileName, stopWords):
 	Return Val: A list of filtered words and their scores (list of lists)
 	"""
 	reviewsFile = open(fileName, 'r')
-	allReviews = []
+	allReviews = {}
 	for line in reviewsFile:
 		line = line.strip().lower()
 		lineLst = line.split()
 		score = int(lineLst[0]) - 2     # get and alter the score
 		review = lineLst[1:]     # get rest of words in review
 		for word in review:
-			if word.isalpha():     # ignoring non-alpha characters
-				if binarySearch(word, stopWords) == False:
-					WORD_PRESENT, wordIdx = isWordPresent(allReviews, word)
-					if WORD_PRESENT:
-						allReviews[wordIdx][0] += score
-					else:
-						allReviews.append([score, word])
+			processWordScore(word, score, allReviews, stopWords)
 
 	reviewsFile.close()
 	return allReviews
 
 #------------------------------------------------------------------------------#
-def isWordPresent(allReviews, word):
+def processWordScore(word, score, allReviews, stopWords):
 	"""
-	Purpose: Checks if a given word is already present within the allReviews
-			 list. If it is present the index is returned
-	Parameters: The word being checked (string) and the list of words and
-				their sentiments (list of lists)
-	Return Val: Whether or not the word is present (boolean) and if present,
-				its index (integer). If it's not present, and index of -1 is returned
+	Purpose: Check if word is a valid word in the dictionary and not a stop word
+	Parameters: word (str) that is to be assigned a score, current score of the
+				word (int), dictionary of each word and its score (dictionary of
+				integers with str key values), list of stop words (list of str)
+	Returns: None
 	"""
-	WORD_PRESENT = False
-	# Iterating through all the reviews to search
-	for i in range(len(allReviews)):
-		seenWord = allReviews[i][1]
-		if word == seenWord:     # checking if the word is in the mini-lists of allReviews
-			WORD_PRESENT = True
-			wordIdx = i
-			return WORD_PRESENT, wordIdx
-	return WORD_PRESENT, -1
+	if word.isalpha():     # ignoring non-alpha characters
+		if binarySearch(word, stopWords) == False:
+			try:
+				allReviews[word] += int(score)
+			except KeyError:
+				allReviews.update({word : int(score)})
+	return
 
 
 #------------------------------------------------------------------------------#
 def sortReviews(wordSentiments):
 	"""
-	Purpose: Sorts the list of review words by score and prints the top and
-			 bottom 20
+	Purpose: Sorts the list of review words by score
 	Parameters: The list of words and their scores (list of lists)
-	Return Val: None
+	Return Val: Sorted list of lists
 	"""
 	# Sorting all the reviews by score (greatest to least)
 	for i in range(1, len(wordSentiments)):
 		marker = wordSentiments[i]
 		j = i-1
 		# If the marker is greater than the current index (because greatest --> least)
-		while j >= 0 and marker > wordSentiments[j]:
+		while j >= 0 and marker[1] > wordSentiments[j][1]:
 			# Moving the sentiment
 			wordSentiments[j+1] = wordSentiments[j]
 			j -= 1
 		wordSentiments[j+1] = marker
 
-	return     # Nothing to return because the list has been edited
+	return wordSentiments
 
 
 #------------------------------------------------------------------------------#
-def printReviews(wordSentiments):
+def printReviews(sortedSentiments):
 	"""
 	Purpose: Formats and prints the top and bottom 20 reviews
 	Parameters: List of all the reviews (list of lists)
 	Return Val: None
 	"""
-	for lst in wordSentiments:
-		word = lst[1]
-		score = lst[0]
+	for lst in sortedSentiments:
+		word = lst[0]
+		score = lst[1]
 		print("%3i %s" % (score, word))
 
 	"""# only printing the top and bottom 20 if the list is longer than 40
@@ -136,13 +126,13 @@ def main():
 	# read in the rotten tomatoes reviews
 	wordSentiments = readReviews("movieReviews.txt", stopWords)
 
-	sortReviews(wordSentiments)
+	sortedSentiments = sortReviews(list(wordSentiments.items()))
 
 	# printing the results
 	print("Top 20:")
-	printReviews(wordSentiments[:20])
+	printReviews(sortedSentiments[:20])
 	print("\nBottom 20:")
-	printReviews(wordSentiments[-20:])
+	printReviews(sortedSentiments[-20:])
 
 	t2 = time()
 	print("\nTime: %8.4f" % (t2-t1))
