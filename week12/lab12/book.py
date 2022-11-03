@@ -1,15 +1,15 @@
 class Book(object):
 	""" class for a single Book object """
 
-	def __init__(self, title, author, publishYear, filePath):
+	def __init__(self, title, author, publishYear, filePath, bookmark):
 		""" constructor for book object, given the title, the author, and the
 		 	year the book was published"""
 		self.title = title
 		self.author = author
 		self.publishYear = int(publishYear)
 		self.filePath = filePath
-		self.bookmark = 0
-
+		self.bookmark = bookmark
+ 
 	def __str__(self):
 		""" pretty-print info about this object """
 		return ("Title: %s\nAuthor: %s\nPublished: %d\nPath: %s" % (self.title, self.author, self.publishYear, self.filePath))

@@ -1,4 +1,4 @@
-from swindle import *
+from enhncedSwindle import *
 
 def newUser():
 	print("\nSince this is the first time you used it,")
@@ -21,30 +21,23 @@ def mainMenu():
 		except ValueError:
 			print("invalid input, try again")
 
-def writeSettings(fileName):
+def writeSettings(userSwindle, fileName):
 
 
 
-	print("hello")
 	openFile = open(fileName, "a")
 
-	ownedList = []
 
-	for book in Swindle.ownedBooks():
-		bookList.append(Swindle.ownedBooks(book))
 
-	availableList = []
-	for book in Swindle.availableBooks():
-		availableList = availableList.append(Swindle.availableBooks(book))
+	for ownedBook in userSwindle.ownedBooks():
+		 
+		 bookText = ownedBook.toString()
+		 openFile.write("%s,%s,%s,%s,%s" % (ownedBooks[1], ownedBooks[2]), ownedBooks[3], ownedBooks[4], ownedBooks[5])
 
-	for book in ownedList:
-		openFile.write(book + "owned")
+	for availableBooks in userSwindle.availableBooks():
+		Booktext = availableBooks.toString()
+		openFile.write("%s,%s,%s,%s,%s" % (availableBooks[1], availalableBooks[2]), availalableBooks[3], availalableBooks[4], availalableBooks[5])
 
-	for book in availableList:
-		openFile.write(books + "available")
-
-	openFile.write(getOwner())
-	openFile.write(getBookmark())
 
 	openFile.close()
 	
@@ -62,9 +55,10 @@ def main():
 		elif menuChoice == 2:
 			userSwindle.showOwned()     # View owned books
 		elif menuChoice == 3:
-			userSwindle.read()          # Choose a book to read
-		else:
-			writeSettings("bookdb.txt")                       # Turn off ereader (quit the program)
+			userSwindle.read()           # Choose a book to read
+		elif menuChoice == 4:
+			writeSettings(userSwindle, "bookdb.txt")
+			                   # Turn off ereader (quit the program)
 
 
 main()
