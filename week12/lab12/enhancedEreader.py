@@ -1,4 +1,4 @@
-from enhncedSwindle import *
+from enhancedSwindle import *
 
 def newUser():
 	print("\nSince this is the first time you used it,")
@@ -22,31 +22,25 @@ def mainMenu():
 			print("invalid input, try again")
 
 def writeSettings(userSwindle, fileName):
-
-
-
 	openFile = open(fileName, "a")
 
-
-
-	for ownedBook in userSwindle.ownedBooks():
-		 
+	for ownedBook in userSwindle.getOwned():
 		 bookText = ownedBook.toString()
-		 openFile.write("%s,%s,%s,%s,%s" % (ownedBooks[1], ownedBooks[2]), ownedBooks[3], ownedBooks[4], ownedBooks[5])
+		 openFile.write("%s,%s,%s,%s,%s" % (ownedBook[1], ownedBook[2]), ownedBook[3], ownedBook[4], ownedBook[5])
 
-	for availableBooks in userSwindle.availableBooks():
+	for availableBooks in userSwindle.getOwned():
 		Booktext = availableBooks.toString()
 		openFile.write("%s,%s,%s,%s,%s" % (availableBooks[1], availalableBooks[2]), availalableBooks[3], availalableBooks[4], availalableBooks[5])
 
 
 	openFile.close()
-	
+
 
 
 def main():
 
 	owner = newUser()                   # Display instructions and get user's name
-	userSwindle = Swindle(owner)        # Create a new Swindle ereader for them
+	userSwindle = Swindle(owner, 20)        # Create a new Swindle ereader for them
 
 	while True:
 		menuChoice = mainMenu()         # Display ereader's main menu

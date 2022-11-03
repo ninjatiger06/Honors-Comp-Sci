@@ -116,6 +116,10 @@ class Swindle(object):
 		for i in range(len(self.ownedBooks)):
 			print("%d: %s" % (i+1, self.ownedBooks[i].toString()))
 
+	def getOwned(self):
+		"""Getter for owned books"""
+		return self.ownedBooks
+
 
 	def showAvailable(self):
 		print("Available books:")

@@ -8,8 +8,8 @@ class Book(object):
 		self.author = author
 		self.publishYear = int(publishYear)
 		self.filePath = filePath
-		self.bookmark = bookmark
- 
+		self.bookmark = int(bookmark)
+
 	def __str__(self):
 		""" pretty-print info about this object """
 		return ("Title: %s\nAuthor: %s\nPublished: %d\nPath: %s" % (self.title, self.author, self.publishYear, self.filePath))
@@ -74,5 +74,3 @@ if __name__ == '__main__':
 	print("bookmark is:", myBook.getBookmark())
 	myBook.setBookmark(12)
 	print("now bookmark is:", myBook.getBookmark())
-
-
