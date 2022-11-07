@@ -51,8 +51,7 @@ def main():
 		elif menuChoice == 3:
 			userSwindle.read()           # Choose a book to read
 		elif menuChoice == 4:
-			writeSettings(userSwindle, "bookdb.txt")
-			                   # Turn off ereader (quit the program)
+			writeSettings(userSwindle, "bookdb.txt") # Turn off ereader (quit the program)
 
 
 main()
