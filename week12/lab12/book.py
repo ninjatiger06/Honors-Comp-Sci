@@ -6,17 +6,17 @@ class Book(object):
 		 	year the book was published"""
 		self.title = title
 		self.author = author
-		self.publishYear = int(publishYear)
+		self.publishYear = publishYear
 		self.filePath = filePath
-		self.bookmark = int(bookmark)
+		self.bookmark = bookmark
 
 	def __str__(self):
 		""" pretty-print info about this object """
-		return ("Title: %s\nAuthor: %s\nPublished: %d\nPath: %s" % (self.title, self.author, self.publishYear, self.filePath))
+		return ("Title: %s\nAuthor: %s\nPublished: %s\nPath: %s" % (self.title, self.author, self.publishYear, self.filePath))
 
 	def toString(self):
 		""" pretty printing for user side """
-		return ("%25s by %20s (%4d)" % (self.title, self.author, self.publishYear))
+		return ("%25s by %20s (%4s)" % (self.title, self.author, self.publishYear))
 
 	def getTitle(self):
 		""" getter for the title """

@@ -22,18 +22,20 @@ def mainMenu():
 			print("invalid input, try again")
 
 def writeSettings(userSwindle, fileName):
+	
 	openFile = open(fileName, "a")
-
 	for ownedBook in userSwindle.getOwned():
 		 bookText = ownedBook.toString()
-		 openFile.write("%s,%s,%s,%s,%s" % (ownedBook[1], ownedBook[2]), ownedBook[3], ownedBook[4], ownedBook[5])
 
-	for availableBooks in userSwindle.getOwned():
-		Booktext = availableBooks.toString()
-		openFile.write("%s,%s,%s,%s,%s" % (availableBooks[1], availalableBooks[2]), availalableBooks[3], availalableBooks[4], availalableBooks[5])
+		 openFile.write("%s,%s,%s,%s,%s" % (bookText[1], bookText[2], bookText[3], bookText[4], bookText[5]))
+
+	for availableBooks in userSwindle.getAvailable():
+		bookText = availableBooks.toString()
+		openFile.write("%s,%s,%s,%s,%s" % (bookText[1], bookText[2], bookText[3], bookText[4], bookText[5]))
 
 
 	openFile.close()
+
 
 
 
@@ -52,6 +54,6 @@ def main():
 			userSwindle.read()           # Choose a book to read
 		elif menuChoice == 4:
 			writeSettings(userSwindle, "bookdb.txt") # Turn off ereader (quit the program)
-
+			break
 
 main()

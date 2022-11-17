@@ -120,6 +120,9 @@ class Swindle(object):
 		"""Getter for owned books"""
 		return self.ownedBooks
 
+	def getAvailable(self):
+
+		return self.availableBooks
 
 	def showAvailable(self):
 		print("Available books:")
