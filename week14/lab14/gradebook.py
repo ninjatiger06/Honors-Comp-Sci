@@ -13,7 +13,7 @@ class Student(object):
 		self.students.append(self)
 
 	def __str__(self):
-		return f"Name: {self.lastname}, {self.firstname}\nID: {self.studentID}\n"
+		return f"Name: {self.lastname}, {self.firstname}\tID: {self.studentID}\n"
 
 	def gradeReport(self):
 		""" Returns the student's average (float) and prints all of the student's
@@ -63,6 +63,29 @@ class Section(object):
 			self.studentList.append(l[0])
 
 
+class Assignment(object):
+	""" class for an individual student's assignments and their grade for it """
+
+	nextAssignmentID = 1
+
+	def __init__(self, studentID, sectionID, title, grade, outOf):
+		""" constructor taking the student's id number (int), section id number
+			(int), the title of the assignment (str), the number of points the
+			student received (int), and the total number of points in the
+			assignment (int) """
+
+		self.studentID = studentID
+		self.sectionID = sectionID
+		self.title = title
+		self.grade = grade
+		self.outOf = outOf
+		self.assignmentID = Assignment.nextAssignmentID
+		Assignment.nextAssignmentID += 1
+
+	def __str__(self):
+		return f"Assignment ID: {self.assignmentID}\tTitle: {self.title}\tGrade: {self.grade}\tOut of: {self.outOf}\tCourse Name: {section.courseName}"
+
+
 if __name__ == '__main__':
 	print("\n#--------Making Students--------#")
 	student1 = Student("Kenini", "Kabobovic")
@@ -72,7 +95,7 @@ if __name__ == '__main__':
 	for student in Student.students:
 		print(student)
 
-	print("\n#--------Making sections--------#")
+	print("\n\n#--------Making sections--------#")
 	section1 = Section([student1, student2], "Honors Comp. Sci.")
 	print(section1)
 	classList1 = section1.classList()
@@ -86,3 +109,5 @@ if __name__ == '__main__':
 	section1.addStudentByName("Eric", "Chong")
 	for student in section1.classList():
 		print(student)
+
+	print("\n\n#--------Making Assignment--------#")
