@@ -1,8 +1,11 @@
+students = []
+sections = []
+assignments = []
+
 class Student(object):
 	""" class for single student object including their first name, last name, and ID """
 
 	nextID = 1
-	students = []
 
 	def __init__(self, firstname, lastname):
 		""" constructor for student object given student's first and last names (strings) """
@@ -10,7 +13,7 @@ class Student(object):
 		self.lastname = lastname
 		self.studentID = Student.nextID
 		Student.nextID += 1
-		self.students.append(self)
+		students.append(self)
 
 	def __str__(self):
 		return f"Name: {self.lastname}, {self.firstname}\tID: {self.studentID}\n"
@@ -34,6 +37,7 @@ class Section(object):
 		self.courseName = courseName
 		self.sectionID = Section.nextSectID
 		Section.nextSectID += 1
+		sections.append(self)
 
 	def __str__(self):
 		""" returns the course name and section id in a human-friendly format """
@@ -49,16 +53,16 @@ class Section(object):
 	def addStudentByID(self):
 		""" prints a list of all students in a section, then takes an input by
 		 	user (integer) and adds the student with that ID to the section"""
-		for student in self.studentList:
+		for student in students:
 			print(student)
 		addID = int(input("ID of the student to add: "))
-		l = [student for student in Student.students if student.studentID == addID]
+		l = [student for student in self.studentList if student.studentID == addID]
 		if l[0] not in self.studentList:
 			self.studentList.append(l[0])
 
 	def addStudentByName(self, firstname, lastname):
 		""" takes the first and last names of a student and them adds them to the section """
-		l = [student for student in Student.students if student.firstname == firstname and student.lastname == lastname]
+		l = [student for student in self.studentList if student.firstname == firstname and student.lastname == lastname]
 		if l[0] not in self.studentList:
 			self.studentList.append(l[0])
 
@@ -81,9 +85,22 @@ class Assignment(object):
 		self.outOf = outOf
 		self.assignmentID = Assignment.nextAssignmentID
 		Assignment.nextAssignmentID += 1
+		assignments.append(self)
 
 	def __str__(self):
 		return f"Assignment ID: {self.assignmentID}\tTitle: {self.title}\tGrade: {self.grade}\tOut of: {self.outOf}\tCourse Name: {section.courseName}"
+
+	@classmethod
+	def enterGrade(cls, title, outOf):
+		print("Available Sections:")
+		for section in sections:
+			print(f"{section}\n")
+		sectionIDInput = int(input("Which section is the student in? "))
+		print("Students in this section:")
+		l = [section for section in sections if section.sectionID == sectionIDInput]
+		for student in l[0].studentList:
+			print(student)
+		studentIDInput = int(input("What is the student ID of the student to give the assignment? "))
 
 
 if __name__ == '__main__':
@@ -92,7 +109,7 @@ if __name__ == '__main__':
 	student2 = Student("John", "Jearbear")
 	student3 = Student("Janos", "Pfeffy")
 	student4 = Student("Eric", "Chong")
-	for student in Student.students:
+	for student in students:
 		print(student)
 
 	print("\n\n#--------Making sections--------#")
@@ -100,14 +117,15 @@ if __name__ == '__main__':
 	print(section1)
 	classList1 = section1.classList()
 	print(classList1)
-	print("\n#--------Adding Student By ID--------#")
-	section1.addStudentByID()
-	for student in section1.classList():
-		print(student)
-
-	print("\n#--------Adding Student By Name--------#")
-	section1.addStudentByName("Eric", "Chong")
-	for student in section1.classList():
-		print(student)
+	# print("\n#--------Adding Student By ID--------#")
+	# section1.addStudentByID()
+	# for student in section1.classList():
+	# 	print(student)
+	#
+	# print("\n#--------Adding Student By Name--------#")
+	# section1.addStudentByName("Eric", "Chong")
+	# for student in section1.classList():
+	# 	print(student)
 
 	print("\n\n#--------Making Assignment--------#")
+	assignment1 = Assignment.enterGrade("bruh", 100)
