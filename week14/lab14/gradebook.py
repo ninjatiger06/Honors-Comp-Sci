@@ -16,7 +16,7 @@ class Student(object):
 		students.append(self)
 
 	def __str__(self):
-		return f"Name: {self.lastname}, {self.firstname}\tID: {self.studentID}\n"
+		return f"Name: {self.lastname}, {self.firstname}     ID: {self.studentID}"
 
 	def gradeReport(self):
 		""" Returns the student's average (float) and prints all of the student's
@@ -47,8 +47,9 @@ class Section(object):
 		""" returns human-friendly list of students in a given class """
 		studentsEnrolled = []
 		for student in self.studentList:
-			studentsEnrolled.append(str(student))
-		return studentsEnrolled
+			# studentsEnrolled.append(str(student))
+			print(str(student))
+		# return studentsEnrolled
 
 	def addStudentByID(self):
 		""" prints a list of all students in a section, then takes an input by
@@ -56,13 +57,13 @@ class Section(object):
 		for student in students:
 			print(student)
 		addID = int(input("ID of the student to add: "))
-		l = [student for student in self.studentList if student.studentID == addID]
+		l = [student for student in students if student.studentID == addID]
 		if l[0] not in self.studentList:
 			self.studentList.append(l[0])
 
 	def addStudentByName(self, firstname, lastname):
 		""" takes the first and last names of a student and them adds them to the section """
-		l = [student for student in self.studentList if student.firstname == firstname and student.lastname == lastname]
+		l = [student for student in students if student.firstname == firstname and student.lastname == lastname]
 		if l[0] not in self.studentList:
 			self.studentList.append(l[0])
 
@@ -88,7 +89,9 @@ class Assignment(object):
 		assignments.append(self)
 
 	def __str__(self):
-		return f"Assignment ID: {self.assignmentID}\tTitle: {self.title}\tGrade: {self.grade}\tOut of: {self.outOf}\tCourse Name: {section.courseName}"
+		sectName = [section for section in sections if section.sectionID == self.sectionID]
+		studentInfo = [student for student in students if student.studentID == self.studentID]
+		return f"Assignment ID: {self.assignmentID}\tTitle: {self.title}\tGrade: {self.grade}\tOut of: {self.outOf}\tCourse Name: {sectName[0].courseName}\n{studentInfo[0]}"
 
 	@classmethod
 	def enterGrade(cls, title, outOf):
@@ -101,6 +104,8 @@ class Assignment(object):
 		for student in l[0].studentList:
 			print(student)
 		studentIDInput = int(input("What is the student ID of the student to give the assignment? "))
+		gradeInput = int(input("How many points did the student get? "))
+		return Assignment(studentIDInput, sectionIDInput, title, gradeInput, outOf)
 
 
 if __name__ == '__main__':
@@ -117,15 +122,19 @@ if __name__ == '__main__':
 	print(section1)
 	classList1 = section1.classList()
 	print(classList1)
-	# print("\n#--------Adding Student By ID--------#")
-	# section1.addStudentByID()
-	# for student in section1.classList():
-	# 	print(student)
-	#
-	# print("\n#--------Adding Student By Name--------#")
-	# section1.addStudentByName("Eric", "Chong")
-	# for student in section1.classList():
-	# 	print(student)
+
+	print("\n#--------Adding Student By ID--------#")
+	section1.classList()
+	section1.addStudentByID()
+	for student in section1.classList():
+		print(student)
+
+	print("\n#--------Adding Student By Name--------#")
+	section1.classList()
+	section1.addStudentByName("Eric", "Chong")
+	for student in section1.classList():
+		print(student)
 
 	print("\n\n#--------Making Assignment--------#")
-	assignment1 = Assignment.enterGrade("bruh", 100)
+	assignment1 = Assignment.enterGrade("Lab 37", 40)
+	print(assignment1)
