@@ -1,6 +1,23 @@
 students = []
 sections = []
 assignments = []
+gradeBook = {}
+
+def enterGrades(title, outOf):
+	"""
+		Purpose: Repeatedly calls Assignment.enterGrade() with the same outOf
+				 value until sectionID entered is 0
+		Parameters: Title of the assignment (string) and how many total points
+					the assignment is worth (integer)
+		Returns: None
+	"""
+	while True:
+		newAssignment = Assignment.enterGrade(title, outOf)
+		if newAssignment == None:
+			break
+		else:
+			assignments.append(newAssignment)
+			
 
 class Student(object):
 	""" class for single student object including their first name, last name, and ID """
@@ -47,9 +64,9 @@ class Section(object):
 		""" returns human-friendly list of students in a given class """
 		studentsEnrolled = []
 		for student in self.studentList:
-			# studentsEnrolled.append(str(student))
+			studentsEnrolled.append(str(student))
 			print(str(student))
-		# return studentsEnrolled
+		return studentsEnrolled
 
 	def addStudentByID(self):
 		""" prints a list of all students in a section, then takes an input by
@@ -99,6 +116,9 @@ class Assignment(object):
 		for section in sections:
 			print(f"{section}\n")
 		sectionIDInput = int(input("Which section is the student in? "))
+		if sectionIDInput == 0:
+			print("Cancelling grade entering")
+			return None
 		print("Students in this section:")
 		l = [section for section in sections if section.sectionID == sectionIDInput]
 		for student in l[0].studentList:
@@ -138,3 +158,6 @@ if __name__ == '__main__':
 	print("\n\n#--------Making Assignment--------#")
 	assignment1 = Assignment.enterGrade("Lab 37", 40)
 	print(assignment1)
+
+	print("\n\n#--------Global enterGrades()--------#")
+	enterGrades("Lab 38.5", 38)
