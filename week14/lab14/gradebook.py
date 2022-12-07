@@ -17,7 +17,28 @@ def enterGrades(title, outOf):
 			break
 		else:
 			assignments.append(newAssignment)
-			
+
+
+def showGrades(title):
+	"""
+		Purpose: Prints a list of all assignments and their grades whose titles
+				 match the title input
+		Parameters: The title of the assignemnt (string)
+		Returns: None
+	"""
+	l = [assignment for assignment in assignments if assignment.title == title]
+	l.sort(key=self.sectionID)
+	prevSectionBreak = l[0].sectionID
+	sectionBreak = l[0].sectionID
+	for i in range(len(l)):
+		if l[i].sectionID != sectionBreak:
+			m = l[prevSectionBreak:i]
+			m.sort(key=self.studentID.lastname)
+			for assignment in m:
+				print(f"{assignment}\n")
+			prevSectionBreak = sectionBreak
+			sectionBreak = l[i].sectionID
+
 
 class Student(object):
 	""" class for single student object including their first name, last name, and ID """
@@ -143,11 +164,11 @@ if __name__ == '__main__':
 	classList1 = section1.classList()
 	print(classList1)
 
-	print("\n#--------Adding Student By ID--------#")
-	section1.classList()
-	section1.addStudentByID()
-	for student in section1.classList():
-		print(student)
+	# print("\n#--------Adding Student By ID--------#")
+	# section1.classList()
+	# section1.addStudentByID()
+	# for student in section1.classList():
+	# 	print(student)
 
 	print("\n#--------Adding Student By Name--------#")
 	section1.classList()
@@ -155,9 +176,19 @@ if __name__ == '__main__':
 	for student in section1.classList():
 		print(student)
 
-	print("\n\n#--------Making Assignment--------#")
-	assignment1 = Assignment.enterGrade("Lab 37", 40)
-	print(assignment1)
 
-	print("\n\n#--------Global enterGrades()--------#")
-	enterGrades("Lab 38.5", 38)
+	print("\n\n#--------Making Assignment--------#")
+	assignment2 = Assignment(1, 1, "Lab 84", 24, 40)
+	assignment3 = Assignment(2, 1, "Lab 84", 40, 40)
+	assignment4 = Assignment(3, 1, "Lab 84", 12, 40)
+
+	# print("\n\n#--------Entering Assignment Grade--------#")
+	# assignment1 = Assignment.enterGrade("Lab 37", 40)
+	# print(assignment1)
+
+	# print("\n\n#--------Global enterGrades()--------#")
+	# enterGrades("Lab 38.5", 38)
+
+
+	print("\n\n#--------Showing Grades--------#")
+	showGrades("Lab 84")
