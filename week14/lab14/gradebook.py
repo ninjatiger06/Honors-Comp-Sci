@@ -1,6 +1,6 @@
-students = []
-sections = []
-assignments = []
+students = {}
+sections = {}
+assignments = {}
 gradeBook = {}
 
 def enterGrades(title, outOf):
@@ -27,13 +27,15 @@ def showGrades(title):
 		Returns: None
 	"""
 	l = [assignment for assignment in assignments if assignment.title == title]
-	l.sort(key=self.sectionID)
+	l.sort(key=lambda assignment: assignment.sectionID)
 	prevSectionBreak = l[0].sectionID
 	sectionBreak = l[0].sectionID
 	for i in range(len(l)):
+		print(f"l[i]: {l[i].sectionID}\nsectionBreak: {sectionBreak}\n{l[i].sectionID != sectionBreak}\n")
 		if l[i].sectionID != sectionBreak:
 			m = l[prevSectionBreak:i]
-			m.sort(key=self.studentID.lastname)
+			for assignment in m: print(assignment)
+			# m.sort(key=lambda student: student.lastname)
 			for assignment in m:
 				print(f"{assignment}\n")
 			prevSectionBreak = sectionBreak
@@ -51,7 +53,7 @@ class Student(object):
 		self.lastname = lastname
 		self.studentID = Student.nextID
 		Student.nextID += 1
-		students.append(self)
+		students.update({self.studentID: self})
 
 	def __str__(self):
 		return f"Name: {self.lastname}, {self.firstname}     ID: {self.studentID}"
@@ -75,7 +77,7 @@ class Section(object):
 		self.courseName = courseName
 		self.sectionID = Section.nextSectID
 		Section.nextSectID += 1
-		sections.append(self)
+		sections.update({self.sectionID: self})
 
 	def __str__(self):
 		""" returns the course name and section id in a human-friendly format """
@@ -92,16 +94,17 @@ class Section(object):
 	def addStudentByID(self):
 		""" prints a list of all students in a section, then takes an input by
 		 	user (integer) and adds the student with that ID to the section"""
-		for student in students:
+		print("\nAll Students:")
+		for student in students.values():
 			print(student)
 		addID = int(input("ID of the student to add: "))
-		l = [student for student in students if student.studentID == addID]
+		l = [student for student in students.values() if student.studentID == addID]
 		if l[0] not in self.studentList:
 			self.studentList.append(l[0])
 
 	def addStudentByName(self, firstname, lastname):
 		""" takes the first and last names of a student and them adds them to the section """
-		l = [student for student in students if student.firstname == firstname and student.lastname == lastname]
+		l = [student for student in students.values() if student.firstname == firstname and student.lastname == lastname]
 		if l[0] not in self.studentList:
 			self.studentList.append(l[0])
 
@@ -124,7 +127,7 @@ class Assignment(object):
 		self.outOf = outOf
 		self.assignmentID = Assignment.nextAssignmentID
 		Assignment.nextAssignmentID += 1
-		assignments.append(self)
+		assignments.update({self.assignmentID: self})
 
 	def __str__(self):
 		sectName = [section for section in sections if section.sectionID == self.sectionID]
@@ -155,7 +158,7 @@ if __name__ == '__main__':
 	student2 = Student("John", "Jearbear")
 	student3 = Student("Janos", "Pfeffy")
 	student4 = Student("Eric", "Chong")
-	for student in students:
+	for student in students.values():
 		print(student)
 
 	print("\n\n#--------Making sections--------#")
@@ -163,24 +166,33 @@ if __name__ == '__main__':
 	print(section1)
 	classList1 = section1.classList()
 	print(classList1)
+	section2 = Section([student3, student4], "Honors Comp. Sci.")
+	print(section2)
+	classList2 = section2.classList()
+	print(classList2)
 
 	# print("\n#--------Adding Student By ID--------#")
+	# print("Old Class List:")
 	# section1.classList()
 	# section1.addStudentByID()
-	# for student in section1.classList():
-	# 	print(student)
+	# print('\nUpdated Class List')
+	# section1.classList()
 
 	print("\n#--------Adding Student By Name--------#")
+	print("Original Class List:")
 	section1.classList()
 	section1.addStudentByName("Eric", "Chong")
-	for student in section1.classList():
-		print(student)
+	print("\nNew Class List:")
+	section1.classList()
 
 
 	print("\n\n#--------Making Assignment--------#")
 	assignment2 = Assignment(1, 1, "Lab 84", 24, 40)
 	assignment3 = Assignment(2, 1, "Lab 84", 40, 40)
-	assignment4 = Assignment(3, 1, "Lab 84", 12, 40)
+	assignment6 = Assignment(2, 3, "Lab 84", 18, 40)
+	assignment7 = Assignment(2, 3, "Lab 84", 36, 40)
+	# assignment4 = Assignment(3, 2, "Reading Quiz #1", 4, 5)
+	# assignment5 = Assignment(4, 2, "Reading Quiz #1", 2, 5)
 
 	# print("\n\n#--------Entering Assignment Grade--------#")
 	# assignment1 = Assignment.enterGrade("Lab 37", 40)
