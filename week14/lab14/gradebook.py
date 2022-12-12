@@ -26,20 +26,15 @@ def showGrades(title):
 		Parameters: The title of the assignemnt (string)
 		Returns: None
 	"""
-	l = [assignment for assignment in assignments if assignment.title == title]
+	l = [assignment for assignment in list(assignments.values()) if assignment.title == title]
 	l.sort(key=lambda assignment: assignment.sectionID)
-	prevSectionBreak = l[0].sectionID
-	sectionBreak = l[0].sectionID
-	for i in range(len(l)):
-		print(f"l[i]: {l[i].sectionID}\nsectionBreak: {sectionBreak}\n{l[i].sectionID != sectionBreak}\n")
-		if l[i].sectionID != sectionBreak:
-			m = l[prevSectionBreak:i]
-			for assignment in m: print(assignment)
-			# m.sort(key=lambda student: student.lastname)
-			for assignment in m:
-				print(f"{assignment}\n")
-			prevSectionBreak = sectionBreak
-			sectionBreak = l[i].sectionID
+	m = []
+	for assignment in l:
+		m.append(students[assignment.studentID])
+	m.sort(key=lambda student: student.lastname)
+	l.sort(key=lambda assignment: assignment.studentID)
+	for assignment in l:
+		print(f"{assignment}\n")
 
 
 class Student(object):
@@ -130,8 +125,8 @@ class Assignment(object):
 		assignments.update({self.assignmentID: self})
 
 	def __str__(self):
-		sectName = [section for section in sections if section.sectionID == self.sectionID]
-		studentInfo = [student for student in students if student.studentID == self.studentID]
+		sectName = [section for section in list(sections.values()) if section.sectionID == self.sectionID]
+		studentInfo = [student for student in list(students.values()) if student.studentID == self.studentID]
 		return f"Assignment ID: {self.assignmentID}\tTitle: {self.title}\tGrade: {self.grade}\tOut of: {self.outOf}\tCourse Name: {sectName[0].courseName}\n{studentInfo[0]}"
 
 	@classmethod
