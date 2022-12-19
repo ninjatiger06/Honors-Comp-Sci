@@ -3,6 +3,21 @@ sections = {}
 assignments = {}
 gradeBook = {}
 
+
+def validateInt(prompt):
+	"""
+		Purpose: Checks to make sure a given input is an integer
+		Paramters: The prompt of the question to ask the user (string)
+		Returns: The user's input (int)
+	"""
+	while True:
+		userInput = input(prompt)
+		try:
+			return int(userInput)
+		except ValueError:
+			print("Please enter a valid integer")
+
+
 def enterGrades(title, outOf):
 	"""
 		Purpose: Repeatedly calls Assignment.enterGrade() with the same outOf
@@ -27,14 +42,35 @@ def showGrades(title):
 		Returns: None
 	"""
 	l = [assignment for assignment in list(assignments.values()) if assignment.title == title]
-	l.sort(key=lambda assignment: assignment.sectionID)
-	m = []
-	for assignment in l:
-		m.append(students[assignment.studentID])
-	m.sort(key=lambda student: student.lastname)
-	l.sort(key=lambda assignment: assignment.studentID)
-	for assignment in l:
-		print(f"{assignment}\n")
+	l.sort(key=lambda assignment: students[assignment.sectionID].lastname)
+	# m = []
+	# for assignment in l:
+	# 	m.append(students[assignment.studentID])
+	# m.sort(key=lambda student: student.lastname)
+	for i in range(len(l)-1, -1, -1):
+		print(f"{l[i]}\n")
+
+
+def adjustGrade(title):
+	"""
+		Purpose: Change the grade of a given student in a specific class
+		Inputs: The title of the assignment (string)
+		Returns: None
+	"""
+	ASSIGNMENT_EXISTS = False
+	for assignment in assignments.values():
+		if title == assignment.title:
+			ASSIGNMENT_EXISTS = True
+	showGrades(title)
+	sectID = validateInt("Section ID: ")
+	studID = validateInt("Student ID: ")
+	# l = [section for section in sections.values() if section.sectionID == sectID]
+	# m = [student for student in l[0].studentList if student.studentID == studID]
+	assign = [assignment for assignment in assignments.values() if assignment.sectionID == sectID and assignment.studentID == studID]
+	newGrade = validateInt("New Grade: ")
+	assign[0].grade = newGrade
+	print(assign[0])
+
 
 
 class Student(object):
@@ -157,11 +193,11 @@ if __name__ == '__main__':
 		print(student)
 
 	print("\n\n#--------Making sections--------#")
-	section1 = Section([student1, student2], "Honors Comp. Sci.")
+	section1 = Section([student1, student2], "P1 Honors Comp. Sci.")
 	print(section1)
 	classList1 = section1.classList()
 	print(classList1)
-	section2 = Section([student3, student4], "Honors Comp. Sci.")
+	section2 = Section([student3, student4], "P2 Honors Comp. Sci.")
 	print(section2)
 	classList2 = section2.classList()
 	print(classList2)
@@ -173,19 +209,23 @@ if __name__ == '__main__':
 	# print('\nUpdated Class List')
 	# section1.classList()
 
-	print("\n#--------Adding Student By Name--------#")
-	print("Original Class List:")
-	section1.classList()
-	section1.addStudentByName("Eric", "Chong")
-	print("\nNew Class List:")
-	section1.classList()
+	# print("\n#--------Adding Student By Name--------#")
+	# print("Original Class List:")
+	# section1.classList()
+	# section1.addStudentByName("Eric", "Chong")
+	# print("\nNew Class List:")
+	# section1.classList()
 
+	print("\n\n#--------Class Lists--------#")
+	for section in list(sections.values()):
+		print("#-----Section Break-----#")
+		print(section.classList())
 
 	print("\n\n#--------Making Assignment--------#")
 	assignment2 = Assignment(1, 1, "Lab 84", 24, 40)
 	assignment3 = Assignment(2, 1, "Lab 84", 40, 40)
-	assignment6 = Assignment(2, 3, "Lab 84", 18, 40)
-	assignment7 = Assignment(2, 3, "Lab 84", 36, 40)
+	assignment6 = Assignment(3, 2, "Lab 84", 18, 40)
+	assignment7 = Assignment(4, 2, "Lab 84", 36, 40)
 	# assignment4 = Assignment(3, 2, "Reading Quiz #1", 4, 5)
 	# assignment5 = Assignment(4, 2, "Reading Quiz #1", 2, 5)
 
@@ -199,3 +239,6 @@ if __name__ == '__main__':
 
 	print("\n\n#--------Showing Grades--------#")
 	showGrades("Lab 84")
+
+	print("\n\n#--------Adjusting Grades--------#")
+	adjustGrade("Lab 84")
