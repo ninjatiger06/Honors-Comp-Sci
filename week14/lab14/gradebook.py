@@ -1,3 +1,5 @@
+import pickle
+
 students = {}
 sections = {}
 assignments = {}
@@ -62,11 +64,17 @@ def adjustGrade(title):
 		if title == assignment.title:
 			ASSIGNMENT_EXISTS = True
 	showGrades(title)
-	sectID = validateInt("Section ID: ")
-	studID = validateInt("Student ID: ")
-	# l = [section for section in sections.values() if section.sectionID == sectID]
-	# m = [student for student in l[0].studentList if student.studentID == studID]
-	assign = [assignment for assignment in assignments.values() if assignment.sectionID == sectID and assignment.studentID == studID]
+	GRADE_EXISTS = False
+	while GRADE_EXISTS == False:
+		sectID = validateInt("Section ID: ")
+		studID = validateInt("Student ID: ")
+		# l = [section for section in sections.values() if section.sectionID == sectID]
+		# m = [student for student in l[0].studentList if student.studentID == studID]
+		assign = [assignment for assignment in assignments.values() if assignment.sectionID == sectID and assignment.studentID == studID]
+		if len(assign) == 1:
+			GRADE_EXISTS = True
+		else:
+			print("Please input a student in an existing section\n")
 	newGrade = validateInt("New Grade: ")
 	assign[0].grade = newGrade
 	print(assign[0])
@@ -183,6 +191,44 @@ class Assignment(object):
 		return Assignment(studentIDInput, sectionIDInput, title, gradeInput, outOf)
 
 
+def loadGradebook(filename):
+	"""
+		Purpose: Loads an existing instance of a gradebook from an inputted file
+		Parameters: Name of file of gradebook (string)
+		Returns: students, sections, and assignments dictionaries
+	"""
+	# filename = input("Name of the file to load: ")
+	try:
+		with open(filename, 'rb') as infile:
+			instance = pickle.load(infile)
+			students = instance["students"]
+			assignments = instance["assignments"]
+			sections = instance["sections"]
+		return students, assignments, sections
+	except FileNotFoundError:
+		Student.nextID = 1
+		Assignment.nextID = 1
+		Section.nextID = 1
+		students = {}
+		assignments = {}
+		sections = {}
+		return students, assignments, sections
+
+
+def saveGradebook(instance):
+	"""
+		Purpose: Saves the gradebook as a pickle
+		Paramters: Instance of all the stuudents, sections, and assignments dictionaries
+		Returns: None
+	"""
+	filename = input("Name of the file to save data to: ")
+	with open(filename, 'wb') as outfile:
+		pickle.dump(instance, outfile)
+
+
+students, sections, assignments = loadGradebook("gradebook.dat")
+
+
 if __name__ == '__main__':
 	print("\n#--------Making Students--------#")
 	student1 = Student("Kenini", "Kabobovic")
@@ -240,5 +286,14 @@ if __name__ == '__main__':
 	print("\n\n#--------Showing Grades--------#")
 	showGrades("Lab 84")
 
-	print("\n\n#--------Adjusting Grades--------#")
-	adjustGrade("Lab 84")
+	# print("\n\n#--------Adjusting Grades--------#")
+	# adjustGrade("Lab 84")
+
+	print("\n\n#--------Loading Gradebook--------#")
+	studs, assigns, sects = loadGradebook()
+	for item in studs.values(): print(item)
+	for item in assigns.values(): print(item)
+	for item in sects.values(): print(item)
+
+	print("\n\n#--------Saving Grades--------#")
+	saveGradebook({"students": students, "assignments": assignments, "sections": sections})
