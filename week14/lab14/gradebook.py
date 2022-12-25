@@ -28,12 +28,13 @@ def enterGrades(title, outOf):
 					the assignment is worth (integer)
 		Returns: None
 	"""
-	while True:
+	ENTERING_GRADES = True
+	while ENTERING_GRADES:
 		newAssignment = Assignment.enterGrade(title, outOf)
 		if newAssignment == None:
-			break
+			ENTERING_GRADES = False
 		else:
-			assignments.append(newAssignment)
+			assignments.update({newAssignment.assignmentID: newAssignment})
 
 
 def showGrades(title):
@@ -90,8 +91,12 @@ class Student(object):
 		""" constructor for student object given student's first and last names (strings) """
 		self.firstname = firstname
 		self.lastname = lastname
-		self.studentID = Student.nextID
-		Student.nextID += 1
+		if len(students) >= 1:
+			self.studentID = len(students) + 1
+			Student.nextID = self.studentID + 1
+		else:
+			self.studentID = Student.nextID
+			Student.nextID += 1
 		students.update({self.studentID: self})
 
 	def __str__(self):
@@ -100,7 +105,18 @@ class Student(object):
 	def gradeReport(self):
 		""" Returns the student's average (float) and prints all of the student's
 		 	assignments, including their names, points earned, max points, and final average """
-		pass
+		studentAssignments = [assignment for assignment in list(assignments.values()) if assignment.studentID == self.studentID]
+		if len(studentAssignments) > 0:
+			gradeTotal = 0
+			outOfTotal = 0
+			for assignment in studentAssignments:
+				print(assignment)
+				gradeTotal += assignment.grade
+				outOfTotal += assignment.outOf
+			avg = round(gradeTotal / outOfTotal * 100, 2)
+			print(f"\nAverage Grade: {avg}%\n")
+		else:
+			print("This student has no assignments.")
 
 
 class Section(object):
@@ -114,8 +130,14 @@ class Section(object):
 			student objects) and the name of the course (string) """
 		self.studentList = studentList
 		self.courseName = courseName
-		self.sectionID = Section.nextSectID
-		Section.nextSectID += 1
+
+		print(len(sections))
+		if len(sections) >= 1:
+			self.sectionID = len(sections) + 1
+			Section.nextSectID = self.sectionID + 1
+		else:
+			self.sectionID = Section.nextSectID
+			Section.nextSectID += 1
 		sections.update({self.sectionID: self})
 
 	def __str__(self):
@@ -128,6 +150,13 @@ class Section(object):
 		for student in self.studentList:
 			studentsEnrolled.append(str(student))
 			print(str(student))
+		return studentsEnrolled
+
+	def roster(self):
+		""" returns a list of all student objects in a given section"""
+		studentsEnrolled = []
+		for student in self.studentList:
+			studentsEnrolled.append(student)
 		return studentsEnrolled
 
 	def addStudentByID(self):
@@ -153,20 +182,30 @@ class Assignment(object):
 
 	nextAssignmentID = 1
 
-	def __init__(self, studentID, sectionID, title, grade, outOf):
+	def __init__(self, studentID, sectionID, title, grade, outOf, assignID):
 		""" constructor taking the student's id number (int), section id number
 			(int), the title of the assignment (str), the number of points the
-			student received (int), and the total number of points in the
-			assignment (int) """
+			student received (int), the total number of points in the
+			assignment (int), and, if it's an already existing assignment being
+			modified, takes that assignment's id (int) """
 
 		self.studentID = studentID
 		self.sectionID = sectionID
 		self.title = title
 		self.grade = grade
 		self.outOf = outOf
-		self.assignmentID = Assignment.nextAssignmentID
-		Assignment.nextAssignmentID += 1
-		assignments.update({self.assignmentID: self})
+
+		if assignID == None:
+			if len(assignments) >= 1:
+				self.assignmentID = len(assignments) + 1
+				Assignment.nextAssignmentID = self.assignmentID + 1
+			else:
+				self.assignmentID = Assignment.nextAssignmentID
+				Assignment.nextAssignmentID += 1
+			assignments.update({self.assignmentID: self})
+		else:
+			self.assignmentID = assignID
+			assignments.update({self.assignmentID: self})
 
 	def __str__(self):
 		sectName = [section for section in list(sections.values()) if section.sectionID == self.sectionID]
@@ -175,20 +214,33 @@ class Assignment(object):
 
 	@classmethod
 	def enterGrade(cls, title, outOf):
+		"""
+			Purpose: Allows the user to enter a grade into an already existing assigment
+			Parameters: The title of the assignment (str) how many points it's out of (int)
+			Returns: The new assignment
+		"""
 		print("Available Sections:")
 		for section in sections:
 			print(f"{section}\n")
-		sectionIDInput = int(input("Which section is the student in? "))
-		if sectionIDInput == 0:
-			print("Cancelling grade entering")
-			return None
+		while True:
+			sectionIDInput = validateInt("Which section is the student in? ")
+			if sectionIDInput == 0:
+				print("Cancelling grade entering")
+				return None
+			elif sectionIDInput in list(sections):
+				break
+			else:
+				print("Please enter a valid section.")
 		print("Students in this section:")
-		l = [section for section in sections if section.sectionID == sectionIDInput]
+		l = [section for section in list(sections.values()) if section.sectionID == sectionIDInput]
 		for student in l[0].studentList:
 			print(student)
-		studentIDInput = int(input("What is the student ID of the student to give the assignment? "))
-		gradeInput = int(input("How many points did the student get? "))
-		return Assignment(studentIDInput, sectionIDInput, title, gradeInput, outOf)
+		studentIDInput = validateInt("What is the student's ID? ")
+		gradeInput = validateInt("How many points did the student get? ")
+		assign = [assignment for assignment in list(assignments.values()) if assignment.title == title]
+		assignID = assign[0].assignmentID
+		assignments.pop(assignID)
+		return Assignment(studentIDInput, sectionIDInput, title, gradeInput, outOf, assignID)
 
 
 def loadGradebook(filename):
@@ -202,16 +254,16 @@ def loadGradebook(filename):
 		with open(filename, 'rb') as infile:
 			instance = pickle.load(infile)
 			students = instance["students"]
-			assignments = instance["assignments"]
 			sections = instance["sections"]
+			assignments = instance["assignments"]
 		return students, assignments, sections
 	except FileNotFoundError:
 		Student.nextID = 1
 		Assignment.nextID = 1
 		Section.nextID = 1
 		students = {}
-		assignments = {}
 		sections = {}
+		assignments = {}
 		return students, assignments, sections
 
 
@@ -221,8 +273,8 @@ def saveGradebook(instance):
 		Paramters: Instance of all the stuudents, sections, and assignments dictionaries
 		Returns: None
 	"""
-	filename = input("Name of the file to save data to: ")
-	with open(filename, 'wb') as outfile:
+	# filename = input("Name of the file to save data to: ")
+	with open("gradebook.dat", 'wb') as outfile:
 		pickle.dump(instance, outfile)
 
 
@@ -268,19 +320,22 @@ if __name__ == '__main__':
 		print(section.classList())
 
 	print("\n\n#--------Making Assignment--------#")
-	assignment2 = Assignment(1, 1, "Lab 84", 24, 40)
-	assignment3 = Assignment(2, 1, "Lab 84", 40, 40)
-	assignment6 = Assignment(3, 2, "Lab 84", 18, 40)
-	assignment7 = Assignment(4, 2, "Lab 84", 36, 40)
+	assignment2 = Assignment(1, 1, "Lab 84", 24, 40, None)
+	assignment3 = Assignment(2, 1, "Lab 84", 40, 40, None)
+	assignment6 = Assignment(3, 2, "Lab 84", 18, 40, None)
+	assignment7 = Assignment(4, 2, "Lab 84", 36, 40, None)
 	# assignment4 = Assignment(3, 2, "Reading Quiz #1", 4, 5)
 	# assignment5 = Assignment(4, 2, "Reading Quiz #1", 2, 5)
 
 	# print("\n\n#--------Entering Assignment Grade--------#")
-	# assignment1 = Assignment.enterGrade("Lab 37", 40)
-	# print(assignment1)
+	# assignment1 = Assignment.enterGrade("Lab 84", 40)
+	# for assignment in assignments.values():
+	# 	print(assignment)
 
 	# print("\n\n#--------Global enterGrades()--------#")
-	# enterGrades("Lab 38.5", 38)
+	# enterGrades("Lab 84", 38)
+	# for assignment in list(assignments.values()):
+	# 	print(assignment)
 
 
 	print("\n\n#--------Showing Grades--------#")
@@ -290,10 +345,13 @@ if __name__ == '__main__':
 	# adjustGrade("Lab 84")
 
 	print("\n\n#--------Loading Gradebook--------#")
-	studs, assigns, sects = loadGradebook()
-	for item in studs.values(): print(item)
-	for item in assigns.values(): print(item)
-	for item in sects.values(): print(item)
+	studs, sects, assigns = loadGradebook("gradebook.dat")
+	for stud in studs.values():
+		print(stud)
+	for sect in sects.values():
+		print(sect)
+	for assign in assigns.values():
+		print(assign)
 
-	print("\n\n#--------Saving Grades--------#")
-	saveGradebook({"students": students, "assignments": assignments, "sections": sections})
+	# print("\n\n#--------Saving Grades--------#")
+	# saveGradebook({"students": students, "assignments": assignments, "sections": sections})
