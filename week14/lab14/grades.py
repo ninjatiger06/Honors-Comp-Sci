@@ -249,7 +249,6 @@ def justQuit():
 
 
 def main():
-	students, sections, assignments = gradebook.loadGradebook("gradebook.dat")
 	print("Welcome, teacher.")
 	RUNNING = True
 	while RUNNING:

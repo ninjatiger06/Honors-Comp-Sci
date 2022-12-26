@@ -248,7 +248,7 @@ class Assignment(object):
 				print("Please enter a valid section.")
 		studsWithAssignment = []
 		for student in assignedSections:
-			if student.studentID not in studsWithAssignment:
+			if student.studentID not in studsWithAssignment and students[student.studentID] in sections[sectionIDInput].roster():
 				studsWithAssignment.append(student.studentID)
 		print("Students in this section:")
 		# l = [section for section in list(sections.values()) if section.sectionID == sectionIDInput]
@@ -257,15 +257,24 @@ class Assignment(object):
 		for student in studsWithAssignment:
 			print(students[student])
 		while True:
-			studentIDInput = validateInt("What is the student's ID? ")
+			studentIDInput = validateInt("What is the student's ID? (Enter '0' to quit) ")
 			if studentIDInput in studsWithAssignment:
 				break
+			elif studentIDInput == 0:
+				return
 			else:
 				print("Please input the ID of a student who has an assignment of this title.\n")
 		gradeInput = validateInt("How many points did the student get? ")
-		assign = [assignment for assignment in list(assignments.values()) if assignment.title == title]
+		assign = [assignment for assignment in list(assignments.values()) if assignment.title == title and assignment.studentID == studentIDInput]
 		assignID = assign[0].assignmentID
-		assignments.pop(assignID)
+		# print(assignID)
+		# print("\nBefore")
+		# for assign in assignments.values():
+		# 	print(assign)
+		# assignments.pop(assignID)
+		# print("\nAfter")
+		# for assign in assignments.values():
+		# 	print(assign)
 		return Assignment(studentIDInput, sectionIDInput, title, gradeInput, outOf, assignID)
 
 
