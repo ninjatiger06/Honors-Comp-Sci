@@ -110,7 +110,7 @@ class Student(object):
 			gradeTotal = 0
 			outOfTotal = 0
 			for assignment in studentAssignments:
-				print(assignment)
+				print(f"{assignment}\n")
 				gradeTotal += assignment.grade
 				outOfTotal += assignment.outOf
 			avg = round(gradeTotal / outOfTotal * 100, 2)
@@ -165,16 +165,26 @@ class Section(object):
 		print("\nAll Students:")
 		for student in students.values():
 			print(student)
-		addID = int(input("ID of the student to add: "))
-		l = [student for student in students.values() if student.studentID == addID]
+		while True:
+			addID = int(input("ID of the student to add: "))
+			l = [student for student in students.values() if student.studentID == addID]
+			if len(l) > 0:
+				break
+			else:
+				print("Please enter a valid student ID.")
 		if l[0] not in self.studentList:
 			self.studentList.append(l[0])
+			print(f"Added student of ID number {l[0]}")
 
 	def addStudentByName(self, firstname, lastname):
 		""" takes the first and last names of a student and them adds them to the section """
 		l = [student for student in students.values() if student.firstname == firstname and student.lastname == lastname]
-		if l[0] not in self.studentList:
-			self.studentList.append(l[0])
+		if len(l) > 0:
+			if l[0] not in self.studentList:
+				self.studentList.append(l[0])
+				print(f"Added student {firstname} {lastname} to the section.")
+		else:
+			print(f"Student {firstname} {lastname} not found.")
 
 
 class Assignment(object):
@@ -215,27 +225,43 @@ class Assignment(object):
 	@classmethod
 	def enterGrade(cls, title, outOf):
 		"""
-			Purpose: Allows the user to enter a grade into an already existing assigment
+			Purpose: Allows the user to modify the grade of an already existing assigment
 			Parameters: The title of the assignment (str) how many points it's out of (int)
 			Returns: The new assignment
 		"""
+		assignedSections = [assignment for assignment in assignments.values() if assignment.title == title]
+		sectsWithAssignment = []
+		for assignment in assignedSections:
+			if assignment.sectionID not in sectsWithAssignment:
+				sectsWithAssignment.append(assignment.sectionID)
 		print("Available Sections:")
-		for section in sections:
+		for section in sectsWithAssignment:
 			print(f"{section}\n")
 		while True:
-			sectionIDInput = validateInt("Which section is the student in? ")
+			sectionIDInput = validateInt("Which section is the student in? (Enter '0' to quit) ")
 			if sectionIDInput == 0:
 				print("Cancelling grade entering")
 				return None
-			elif sectionIDInput in list(sections):
+			elif sectionIDInput in list(sectsWithAssignment):
 				break
 			else:
 				print("Please enter a valid section.")
+		studsWithAssignment = []
+		for student in assignedSections:
+			if student.studentID not in studsWithAssignment:
+				studsWithAssignment.append(student.studentID)
 		print("Students in this section:")
-		l = [section for section in list(sections.values()) if section.sectionID == sectionIDInput]
-		for student in l[0].studentList:
-			print(student)
-		studentIDInput = validateInt("What is the student's ID? ")
+		# l = [section for section in list(sections.values()) if section.sectionID == sectionIDInput]
+		# for student in l[0].studentList:
+		# 	print(student)
+		for student in studsWithAssignment:
+			print(students[student])
+		while True:
+			studentIDInput = validateInt("What is the student's ID? ")
+			if studentIDInput in studsWithAssignment:
+				break
+			else:
+				print("Please input the ID of a student who has an assignment of this title.\n")
 		gradeInput = validateInt("How many points did the student get? ")
 		assign = [assignment for assignment in list(assignments.values()) if assignment.title == title]
 		assignID = assign[0].assignmentID
@@ -256,7 +282,7 @@ def loadGradebook(filename):
 			students = instance["students"]
 			sections = instance["sections"]
 			assignments = instance["assignments"]
-		return students, assignments, sections
+		return students, sections, assignments
 	except FileNotFoundError:
 		Student.nextID = 1
 		Assignment.nextID = 1
@@ -279,7 +305,6 @@ def saveGradebook(instance):
 
 
 students, sections, assignments = loadGradebook("gradebook.dat")
-
 
 if __name__ == '__main__':
 	print("\n#--------Making Students--------#")
@@ -311,6 +336,7 @@ if __name__ == '__main__':
 	# print("Original Class List:")
 	# section1.classList()
 	# section1.addStudentByName("Eric", "Chong")
+	# section1.addStudentByName("Evan", "Up")
 	# print("\nNew Class List:")
 	# section1.classList()
 
@@ -332,10 +358,10 @@ if __name__ == '__main__':
 	# for assignment in assignments.values():
 	# 	print(assignment)
 
-	# print("\n\n#--------Global enterGrades()--------#")
-	# enterGrades("Lab 84", 38)
-	# for assignment in list(assignments.values()):
-	# 	print(assignment)
+	print("\n\n#--------Global enterGrades()--------#")
+	enterGrades("Lab 84", 38)
+	for assignment in list(assignments.values()):
+		print(assignment)
 
 
 	print("\n\n#--------Showing Grades--------#")

@@ -23,7 +23,7 @@ def confirmExistence(checkLst, prompt):
 	"""
 	while True:
 		userInput = validateInt(prompt)
-		if userInput in checkLst:
+		if userInput in checkLst or userInput == 0:
 			return userInput
 		else:
 			print("Please enter a valid ID.")
@@ -98,26 +98,30 @@ def createAssignment():
 		Returns: None
 	"""
 	print("\n\n#--------Creating Assignment--------#")
-	sectID = confirmExistence(list(gradebook.sections), "Section ID: ")
-	sectsdict = gradebook.sections
-	sects = list(sectsdict.values())
-	sect = [section for section in sects if section.sectionID == sectID]
-	print("Students in the section:")
-	roster = sect[0].roster()
-	idLst = []
-	for stud in roster:
-		print(stud)
-		idLst.append(stud.studentID)
-	studID = validateInt("Student ID (If you wish to exit, enter 0): ")
-	if studID == 0:
+	print("Sections:")
+	for section in gradebook.sections.values():
+		print(f"{section}\n")
+	sectID = confirmExistence(list(gradebook.sections), "Section ID (Enter '0' to quit): ")
+	if sectID == 0:
 		return
 	else:
+		sectsdict = gradebook.sections
+		sects = list(sectsdict.values())
+		sect = [section for section in sects if section.sectionID == sectID]
+		print("Students in the section:")
+		roster = sect[0].roster()
+		idLst = []
+		for stud in roster:
+			print(stud)
+			idLst.append(stud.studentID)
+		studID = confirmExistence(idLst, "Student ID: ")
 		l = [student for student in gradebook.students.values() if student.studentID == studID]
 		if len(l) > 0:
 			title = input("Title of Assignment: ")
 			grade = validateInt("Grade: ")
 			outOf = validateInt("Out of: ")
 			assignment = gradebook.Assignment(studID, sectID, title, grade, outOf, None)
+			print(assignment)
 
 
 def studentReport():
@@ -128,9 +132,16 @@ def studentReport():
 		Returns: None
 	"""
 	print("\n\n#--------Student Grade Report--------#")
-	studID = validateInt("Student ID: ")
-	stud = [student for student in gradebook.students if student == studID]
-	stud[0].gradeReport()
+	print("Students:")
+	for student in gradebook.students.values():
+		print(student)
+	studID = confirmExistence(list(gradebook.students), "Student ID (Enter '0' to cancel): ")
+	if studID == 0:
+		print("Cancelling grade report")
+		return
+	else:
+		stud = [student for student in list(gradebook.students.values()) if student.studentID == studID]
+		stud[0].gradeReport()
 
 
 def calculateAverage(assigns):
@@ -158,17 +169,40 @@ def assignmentReport():
 	CHECKING_ASSIGNMENT = True
 	while CHECKING_ASSIGNMENT:
 		title = input("Assignment Title: ")
-		sectID = validateInt("Section ID: ")
-		assigns = [assignment for assignment in gradebook.assignments.values() if assignment.title == title and assignment.sectionID == sectID]
-		if len(assigns) > 0:
-			break
+		sectID = validateInt("Section ID (Enter '0' to quit): ")
+		if sectID == 0:
+			print("Cancelling Assignment Report")
+			return
 		else:
-			print("Please enter a valid assignment that belongs to a valid section.")
+			assigns = [assignment for assignment in gradebook.assignments.values() if assignment.title == title and assignment.sectionID == sectID]
+			if len(assigns) > 0:
+				break
+			else:
+				print("Please enter a valid assignment that belongs to a valid section.\n")
 	print("\nAssignments: ")
 	for assignment in assigns:
 		print(assignment)
 	avg = calculateAverage(assigns)
 	print(f"\nAverage Grade: {avg}%\n")
+
+
+def printData():
+	"""
+		Purpose: Prints out all students, sections, and assignments saved in the
+				 gradebook.
+		Parameters: None
+		Returns: None
+	"""
+	print("\n\n# --------Printing Gradebook Data--------#")
+	print("Students:")
+	for student in gradebook.students.values():
+		print(student)
+	print("\n\nSections:")
+	for section in gradebook.sections.values():
+		print(section)
+	print("\n\nAssignments:")
+	for assignment in gradebook.assignments.values():
+		print(f"{assignment}\n")
 
 
 def saveAndQuit():
@@ -177,20 +211,22 @@ def saveAndQuit():
 		Parameters: None
 		Returns: None
 	"""
-	print("\nSaving your data.")
+	print("\nSaving your data... ✅")
 	gradebook.saveGradebook({"students": gradebook.students, "sections": gradebook.sections, "assignments": gradebook.assignments})
-	f = open("gradebook.txt", "w")
-	students = []
-	for student in gradebook.students.values():
-		students.append(str(student))
-	sections = []
-	for section in gradebook.sections.values():
-		sections.append(str(section))
-	assignments = []
-	for assignment in gradebook.assignments.values():
-		assignments.append(str(assignment))
-	f.write(str({"students": students, "sections": sections, "assignments": assignments}))
-	f.close()
+	# f = open("gradebook.txt", "w")
+	# students = []
+	# for student in gradebook.students.values():
+	# 	students.append(str(student))
+	# sections = []
+	# for section in gradebook.sections.values():
+	# 	sections.append(str(section))
+	# assignments = []
+	# for assignment in gradebook.assignments.values():
+	# 	assignments.append(str(assignment))
+	# f.write("Students:\n" + str(students))
+	# f.write("\nSections:\n" + str(sections))
+	# f.write("\nAssignments:\n" + str(assignments))
+	# f.close()
 
 
 def justQuit():
@@ -218,38 +254,38 @@ def main():
 	RUNNING = True
 	while RUNNING:
 		if len(gradebook.students) <= 0:
-			print("\nThere are no students yet.\nPlease Choose from the Following Options: \n1. Add a student\n7. Save and Quit\n8. Quit")
+			print("\nThere are no students yet.\nPlease Choose from the Following Options: \n1. Add a student\n7. Print Data\n8. Save and Quit\n9. Quit")
 			CHOOSING_OPTION = True
 			while CHOOSING_OPTION:
 				userOption = validateInt("--> ")
-				if userOption == 1 or userOption == 7 or userOption == 8:
+				if userOption == 1 or userOption == 7 or userOption == 8 or userOption == 9:
 					CHOOSING_OPTION = False
 				else:
 					print("Please select one of the options.\n")
 		elif len(gradebook.sections) <= 0:
-			print("\nThere are no sections yet.\nPlease Choose from the Following Options: \n1. Add a student\n2. Add a section\n7. Save and Quit\n8. Quit")
+			print("\nThere are no sections yet.\nPlease Choose from the Following Options: \n1. Add a student\n2. Add a section\n7. Print Data\n8. Save and Quit\n9. Quit")
 			CHOOSING_OPTION = True
 			while CHOOSING_OPTION:
 				userOption = validateInt("--> ")
-				if userOption >= 1 and userOption <= 2 or userOption == 7 or userOption == 8:
+				if userOption >= 1 and userOption <= 2 or userOption == 7 or userOption == 8 or userOption == 9:
 					CHOOSING_OPTION = False
 				else:
 					print("Please select one of the options.\n")
 		elif len(gradebook.assignments) <= 0:
-			print("\nThere are no assignments yet.\nPlease Choose from the Following Options: \n1. Add a student\n2. Add a section\n3. Create a new assignment and enter grades\n7. Save and Quit\n8. Quit")
+			print("\nThere are no assignments yet.\nPlease Choose from the Following Options: \n1. Add a student\n2. Add a section\n3. Create a new assignment and enter grades\n7. Print Data\n8. Save and Quit\n9. Quit")
 			CHOOSING_OPTION = True
 			while CHOOSING_OPTION:
 				userOption = validateInt("--> ")
-				if userOption >= 1 and userOption <= 3 or userOption == 7 or userOption == 8:
+				if userOption >= 1 and userOption <= 3 or userOption == 7 or userOption == 8 or userOption == 9:
 					CHOOSING_OPTION = False
 				else:
 					print("Please select one of the options.\n")
 		else:
-			print("\nPlease Choose from the Following Options:\n1. Add a student\n2. Add a section\n3. Create a new assignment and enter grades\n4. Get a student grade report\n5. Get report of all grades from one section on one assignment\n6. Modify a preexisting grade\n7. Save and Quit\n8. Quit")
+			print("\nPlease Choose from the Following Options:\n1. Add a student\n2. Add a section\n3. Create a new assignment and enter grades\n4. Get a student grade report\n5. Get report of all grades from one section on one assignment\n6. Modify a preexisting grade\n7. Print Data\n8. Save and Quit\n9. Quit")
 			CHOOSING_OPTION = True
 			while CHOOSING_OPTION:
 				userOption = validateInt("--> ")
-				if userOption >= 1 and userOption <= 8:
+				if userOption >= 1 and userOption <= 9:
 					CHOOSING_OPTION = False
 				else:
 					print("Please select one of the options.\n")
@@ -266,6 +302,8 @@ def main():
 		elif userOption == 6:
 			modifyGrades()
 		elif userOption == 7:
+			printData()
+		elif userOption == 8:
 			saveAndQuit()
 			break
 		else:

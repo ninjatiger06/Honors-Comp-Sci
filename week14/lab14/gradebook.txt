@@ -1,1 +1,0 @@
-{'students': ['Name: pfef, jonas     ID: 1'], 'sections': ['Course Name: comp sci\nSection ID: 1'], 'assignments': ['Assignment ID: 1\tTitle: asdf\tGrade: 40\tOut of: 40\tCourse Name: comp sci\nName: pfef, jonas     ID: 1']}
