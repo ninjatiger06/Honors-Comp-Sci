@@ -4,6 +4,7 @@ from book import *
 def readBookDatabase(filename):
 	""" read in book info from bookdb.txt, save each line as a Book object in list.
 		This list will be returned and will serve as availableBooks. """
+	owner = ""
 	infile = open(filename, 'r')
 	availableBooks = []
 	ownedBooks = []
@@ -11,17 +12,21 @@ def readBookDatabase(filename):
 		# books have their important data split by commas
 		book = book.strip()
 		book = book.split(",")
-		title = book[0]
-		author = book[1]
-		publishYear = book[2]
-		bookPath = book[3]
-		bookmark = book[4]
-		newBook = Book(title, author, publishYear, bookPath, bookmark)
-		if book[5] == "owned":
-			ownedBooks.append(newBook)
+		if book[0] == "#":
+			owner = book[1]
 		else:
-			availableBooks.append(newBook)
-	return availableBooks, ownedBooks
+			title = book[0]
+			author = book[1]
+			publishYear = book[2]
+			bookPath = book[3]
+			bookmark = book[4]
+			newBook = Book(title, author, publishYear, bookPath, bookmark)
+			if book[5] == "owned":
+				ownedBooks.append(newBook)
+			else:
+				availableBooks.append(newBook)
+				
+	return availableBooks, ownedBooks, owner
 
 
 
@@ -33,7 +38,7 @@ class Swindle(object):
 		""" constructor for swindle object, given the owner, books for sales,
 			owned books, and defautl page length """
 		self.owner = owner
-		self.availableBooks, self.ownedBooks = readBookDatabase("bookdb.txt")    # list of Book objects
+		self.availableBooks, self.ownedBooks, self.owner = readBookDatabase("bookdb.txt")    # list of Book objects
 		self.pageLength = pageLength
 
 	def __str__(self):
@@ -57,8 +62,8 @@ class Swindle(object):
 		bookLinesList = bookContents.split("\n")
 		numLines = len(bookLinesList)
 		numPages = numLines // self.pageLength  # calculate total number of pages in book
-		page = book.getBookmark()               # get current page (most recently read)
-		pageStart = page * self.pageLength
+		page = int(book.getBookmark())               # get current page (most recently read)
+		pageStart = int(page * self.pageLength)
 		pageEnd = pageStart + self.pageLength   # display 20 lines per page
 		if pageEnd > numLines:
 			pageEnd = numLines                  # in case you're at the end of the book
@@ -85,8 +90,8 @@ class Swindle(object):
 				return book
 			elif choice == "n":                 # move on to the next page in the book
 				bookContents = book.getText()   # unless user is on the last page
-				numLines = bookContents.count("\n")
-				currentLine = currentPage * self.pageLength
+				numLines = int(bookContents.count("\n"))
+				currentLine = int(currentPage * self.pageLength)
 				if (currentLine + 1) < (numLines - self.pageLength):
 					book.setBookmark(currentPage+1)
 				else:
