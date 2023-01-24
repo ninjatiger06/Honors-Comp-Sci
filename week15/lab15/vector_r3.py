@@ -1,5 +1,12 @@
+"""
+Name: Jonas Pfefferman
+Date: 1/18/23
+Purpose: Creates a VectorR3 class, or a 3D vector, and run a number of tests on its functionality
+"""
+
 import math
 import pickle
+from numbers import Real
 
 class VectorR3:
     """"
@@ -10,14 +17,14 @@ class VectorR3:
         self.y = y
         self.z = z
 
-    def __str__(self):
+    def __str__(self) -> 'str':
         return f"⟨{self.x}, {self.y}, {self.z}⟩"
     
-    def __repr__(self):
+    def __repr__(self) -> 'str':
         return f"VectorR3({self.x}, {self.y}, {self.z})"
 
     def __abs__(self) -> 'float':
-        return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2) + math.pow(self.z, 2))
+        return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
     def __add__(self, other: 'VectorR3') -> 'VectorR3':
         sumX = self.x + other.x
@@ -62,9 +69,48 @@ class VectorR3:
             areEqual = False
         return areEqual
 
+    def __matmul__(self, other: 'VectorR3') -> 'VectorR3':
+        newX = (self.y * other.z) - (self.z * other.y)
+        newY = (self.z * other.x) - (self.x * other.z)
+        newZ = (self.x * other.y) - (self.y * other.x)
+        return VectorR3(newX, newY, newZ)
+
+    def cos(*args) -> 'float':
+        if len(args) == 1 and isinstance(args[0], Real):
+            return math.cos(args[0])
+        elif len(args) == 2 and isinstance(args[0], VectorR3) and isinstance(args[1], VectorR3):
+            numerator = args[0] * args[1]
+            denom1 = abs(args[0])
+            denom2 = abs(args[1])
+            denominator = denom1 * denom2
+            return numerator / denominator
+        else:
+            print("Not properly implemented")
+
+    def sin(*args) ->'float':
+        if len(args) == 1 and isinstance(args[0], Real):
+            return math.sin(args[0])
+        elif len(args) == 2 and isinstance(args[0], VectorR3) and isinstance(args[1], VectorR3):
+            vectorCos = VectorR3.cos(args[0], args[1])
+            subtractor = vectorCos ** 2
+            return math.sqrt(1 - subtractor)
+        else:
+            print("Not properly implemented")
+
+    def tan(*args) -> 'float':
+        if len(args) == 1 and isinstance(args[0], Real):
+            return math.tan(args[0])
+        elif len(args) == 2 and isinstance(args[0], VectorR3) and isinstance(args[1], VectorR3):
+            vectorSin = VectorR3.sin(args[0], args[1])
+            vectorCos = VectorR3.cos(args[0], args[1])
+            print(vectorSin, vectorCos)
+            return vectorSin / vectorCos
+        else:
+            print("Not properly implemented")
+
 
 if __name__ == '__main__':
-    vector1 = VectorR3(2, 8, 6)
+    vector1 = VectorR3(4, -1, 2)
     print(vector1)
     vector2 = eval(vector1.__repr__())
     # vector2 = VectorR3(1, 2, 7)
@@ -78,7 +124,15 @@ if __name__ == '__main__':
     bool4 = vector4.__bool__()
     print(bool3, bool4)
 
+    vector5 = VectorR3(-2, 3, 5)
+
     pickle = vector4.__bytes__()
     print(pickle)
 
-    print(vector1 == vector2, vector3 == vector4, vector1 == vector3)
+    cosine1 = VectorR3.cos(3)
+    cosine2 = VectorR3.cos(vector1, vector5)
+    cosBreak1 = VectorR3.cos(vector1)
+    cosBreak2 = VectorR3.cos(vector1, 2)
+
+    tan1 = VectorR3.tan(vector1, vector5)
+    print(tan1)
