@@ -41,6 +41,5 @@ int main() {
     else {
         cout << "Driver's speed is within the legal limit." << endl;
     }
-
-
+    return 0;
 }
