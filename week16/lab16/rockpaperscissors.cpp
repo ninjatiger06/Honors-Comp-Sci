@@ -8,6 +8,7 @@ Date; 2/13/23
 
 #include<iostream>
 #include<string>
+#include<ctime>
 
 using namespace std;
 
@@ -54,7 +55,8 @@ int calculateWinner(string choice1, string choice2) {
 int printScores(string username, int userWins, int compWins) {
     /* Prints out a scorecard of the wins after each round */
     cout << "-----------------------------------------" << endl;
-    cout << username << ": " << userWins << endl << "Computer: " << compWins << endl;
+    cout << username << ": " << userWins << "          " << "Computer: " <<
+        compWins << endl;
     cout << "-----------------------------------------" << endl << endl;
     return 0;
 }
@@ -69,6 +71,7 @@ int main() {
     string p2Choice;
     int randIdx;
     int winner;
+    srand(time(NULL));
 
     cout << "What is your name? ";
     getline(cin, username);
@@ -79,11 +82,12 @@ int main() {
         endl;
 
     while (userWins < playTo && compWins < playTo) {
-        cout << "Next round:" << endl;
+        cout << endl << "Next round:" << endl;
         p1Choice = getChoice();
         randIdx = rand() % 3;
         p2Choice = possibleMoves[randIdx];
-        cout << "Computer's move: " << p2Choice << endl;
+        cout << username << " picks " << p1Choice << " and Computer picks " <<
+            p2Choice << endl;
         winner = calculateWinner(p1Choice, p2Choice);
 
         if (winner == 0) {

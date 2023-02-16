@@ -15,8 +15,9 @@ int main() {
     cout << "Enter text: ";
     getline(cin, userInput);
 
+    cout << '-';
     for (auto character: userInput) {
-        cout << character << "-";
+        cout << character << '-';
     }
 
     return 0;

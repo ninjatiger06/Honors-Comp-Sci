@@ -18,13 +18,14 @@ int main() {
     cout << "Enter speed limit: ";
     cin >> speedLimit;
     
-    cout << "Enter clockedd speed: ";
+    cout << "Enter clocked speed: ";
     cin >> userSpeed;
 
     difference = userSpeed - speedLimit;
 
     if (difference >= 1) {
-        cout << "Driver is speeding! Clocked at " << difference << " mph over the speed limit." << endl;
+        cout << "Driver is speeding! Clocked at " << difference <<
+            " mph over the speed limit." << endl;
         if (difference <= 9) {
             cout << "Issue a warning." << endl;
         }

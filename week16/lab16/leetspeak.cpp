@@ -18,13 +18,22 @@ int main() {
 
     for (auto character: userInput) {
         switch (character) {
-            case 'e' | 'E':
+            case 'e':
                 cout << '3';
                 break;
-            case 'l' | 'L':
+            case 'E':
+                cout << '3';
+                break;
+            case 'l':
                 cout << '1';
                 break;
-            case 's' | 'S':
+            case 'L':
+                cout << '1';
+                break;
+            case 's':
+                cout << '5';
+                break;
+            case 'S':
                 cout << '5';
                 break;
             default:

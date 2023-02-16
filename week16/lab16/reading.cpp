@@ -12,6 +12,7 @@ using namespace std;
 int main() {
     int totalPages;
     int pagesLeft;
+    int numDays;
     int daysLeft;
     int pagesReadTotal;
     int pagesRead;
@@ -20,19 +21,27 @@ int main() {
     cin >> totalPages;
     pagesLeft = totalPages;
     cout << "Days left? ";
-    cin >> daysLeft;
+    cin >> numDays;
 
     pagesReadTotal = 0;
-    for (int i=0; i <= daysLeft + 1; i++) {
-        cout << "Pages read: ";
+    daysLeft = numDays;
+    for (int i=0; i < numDays ; i++) {
+        cout << endl << "Pages read: ";
         cin >> pagesRead;
 
         daysLeft -= 1;
         pagesReadTotal += pagesRead;
         pagesLeft = totalPages - pagesReadTotal;
 
-        cout << "You have read " << pagesReadTotal << " out of " << totalPages << " pages." << endl;
-        cout << pagesLeft << " pages left, " << daysLeft << " days to go." << endl;
+        if (pagesLeft == 0) {
+            cout << "You have read " << pagesReadTotal << " out of " <<
+                totalPages << " pages. You finished early!" << endl;
+            break;
+        }
+
+        cout << "You have read " << pagesReadTotal << " out of " << totalPages
+            << " pages." << endl << pagesLeft << " pages left, " << daysLeft <<
+            " days to go." << endl;
     }
 
     return 0;
