@@ -1,0 +1,6 @@
+name,date,count,description,replaces_product,approved
+"Inflatable Elephant, African", 2013-09-23,5,"Found in Africa.
+They live in dense forests, mopane and miombo woodlands, Sahelian scrub or deserts.",null,TRUE
+Large Mouse,8/19/2013,3,"A ""largish"" mouse",General Mouse,FALSE
+,,,,,
+Kenaneh, 2023-03-01, the soccer field, null, false,
