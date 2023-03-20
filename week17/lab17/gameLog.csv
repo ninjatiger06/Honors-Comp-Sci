@@ -1,2 +1,9 @@
-Player1, P1 Move, P1 Wins, Player2, P2 Move, P2 Wins, Winner
-Jonas, rock, 0, Computer, paper, 1, Computer
+Game Number, Player1, P1 Move, P1 Wins, Player2, P2 Move, P2 Wins, Winner
+1, jonas,rock,0,Computer,paper,1,kenan,
+1, jonas,rock,0,Computer,paper,2,kenan,
+1, jonas,rock,0,Computer,paper,1,kenan,
+1, jonas,rock,0,Computer,paper,2,kenan,
+,,,,,,,,
+2, janooze,rock,0,Computer,paper,1,Computer,
+2, janooze,paper,0,Computer,scissors,2,Computer,
+0as,rock,1,Computer,scissors,0,as,,,,,,,,,

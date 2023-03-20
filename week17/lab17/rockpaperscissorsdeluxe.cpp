@@ -2,8 +2,19 @@
 #include<string>
 #include<ctime>
 #include<fstream>
+#include<stdlib.h>
 
 using namespace std;
+
+struct round {
+    string p1Name;
+    string p1Move;
+    int p1Wins;
+    string p2Name;
+    string p2Move;
+    int p2Wins;
+    string winner;
+};
 
 string possibleMoves[3] = {"rock", "paper", "scissors"};
 
@@ -26,6 +37,45 @@ string getChoice() {
     }
 }
 
+int readGameLog(string filename, round *logArrayPtr, int logIdx, int *gameNumPtr) {
+    ifstream readLog(filename);
+    string inStr;
+    string firstLine;
+    int tmp;
+    getline(readLog, firstLine);
+    if (firstLine != "") {
+        while (readLog.good()) {
+            getline(readLog, inStr, ',');
+            tmp = stoi(inStr);
+            *gameNumPtr = tmp + 1;
+            getline(readLog, inStr, ',');
+            logArrayPtr[logIdx].p1Name = inStr;
+            getline(readLog, inStr, ',');
+            logArrayPtr[logIdx].p1Move = inStr;
+            getline(readLog, inStr, ',');
+            tmp = stoi(inStr);
+            logArrayPtr[logIdx].p1Wins = tmp;
+            getline(readLog, inStr, ',');
+            logArrayPtr[logIdx].p2Name = inStr;
+            getline(readLog, inStr, ',');
+            logArrayPtr[logIdx].p2Move = inStr;
+            getline(readLog, inStr, ',');
+            tmp = stoi(inStr);
+            logArrayPtr[logIdx].p2Wins = tmp;
+            getline(readLog, inStr);
+            logArrayPtr[logIdx].winner = inStr;
+            logIdx++;
+        }
+    }
+    else {
+        ofstream gameLog(filename, ios::app);
+        gameLog << "Game Number, Player1, P1 Move, P1 Wins, Player2, P2 Move, P2 Wins, Winner";
+        gameLog.close();
+        *gameNumPtr = 1;
+    }
+    return 0;
+}
+
 int calculateWinner(string choice1, string choice2) {
     /* Takes the moves of players 1 and 2 and checks to see who won */
     if (choice1 == choice2) {
@@ -45,27 +95,57 @@ int calculateWinner(string choice1, string choice2) {
     }
 }
 
-int printScores(string username, int userWins, int compWins) {
+int printScores(string p1Name, string p2Name, int userWins, int compWins) {
     /* Prints out a scorecard of the wins after each round */
     cout << "-----------------------------------------" << endl;
-    cout << username << ": " << userWins << "          " << "Computer: " <<
+    cout << p1Name << ": " << userWins << "          " << p2Name << ": " <<
         compWins << endl;
     cout << "-----------------------------------------" << endl << endl;
     return 0;
 }
 
-struct round {
-    string p1Name;
-    string p1Move;
-    int p1Wins;
-    string p2Name;
-    string p2Move;
-    int p2Wins;
-    string winner;
-};
+// int logRound(ofstream gameLog, round *currRound) {
+//     gameLog << "\n";
+//     gameLog << currRound->p1Name << ",";
+//     gameLog << currRound->p1Move << ",";
+//     gameLog << currRound->p1Wins << ",";
+//     gameLog << currRound->p2Name << ",";
+//     gameLog << currRound->p2Move << ",";
+//     gameLog << currRound->p2Wins << ",";
+//     gameLog << currRound->winner << ",";
+//     return 0;
+// }
+
+int logGame(round logArray[], string filename, int logLen, int gameNum) {
+    ofstream gameLog(filename, ios::app);
+    for (int i=0; i<logLen; i++) {
+        round lookRound;
+        lookRound = logArray[i];
+
+        if (lookRound.p1Name == "") {
+            break;
+        }
+
+        gameLog << endl;
+        gameLog << gameNum;
+        gameLog << lookRound.p1Name << ',';
+        gameLog << lookRound.p1Move << ',';
+        gameLog << lookRound.p1Wins << ',';
+        gameLog << lookRound.p2Name << ',';
+        gameLog << lookRound.p2Move << ',';
+        gameLog << lookRound.p2Wins << ',';
+        gameLog << lookRound.winner << ',';
+    }
+    gameLog << ",,,,,,,,";
+    return 0;
+}
 
 int main() {
-    string username;
+    string inputStr;
+    string p1Name;
+    string p2Name;
+    int gameNum;
+    int * gameNumPtr = & gameNum;
     int playTo;
     int totalGames = 0;
     int userWins = 0;
@@ -75,56 +155,117 @@ int main() {
     int randIdx;
     int winner;
     srand(time(NULL));
-    string logArray[] = {};
-    int logIdx = 0;
+    round currRound;
+    round * roundPtr = & currRound;
+    string whoWon;
+    string filename;
+    int numPlayers;
 
-    ofstream gameLog("gameLog.csv");
+    filename = "gameLog.csv";
+    // ofstream gameLog(filename, ios::app);
 
-    cout << "What is your name? ";
-    getline(cin, username);
+    cout << "How many players (1 or 2): ";
+    getline(cin, inputStr);
+    numPlayers = stoi(inputStr);
+    cout << endl;
+
+    cout << "Player 1 name: " << flush;
+    getline(cin, inputStr);
+    cout << "Hi, " << inputStr << endl;
+    p1Name = inputStr;
+
+    if (numPlayers == 2) {
+        cout << "Player 2 name: ";
+        getline(cin, inputStr);
+        cout << "Hi, " << inputStr << endl;
+        p2Name = inputStr;
+    }
+    else {
+        p2Name = "Computer";
+    }
     
     cout << "How many wins shold we play until? ";
+    cin >> ws;
     cin >> playTo;
     cout << "Let's see who can win " << playTo << " games first. Good luck!" <<
         endl;
 
+    const int logLen = playTo*10;
+    round logArray[logLen] = {};
+    int logIdx = 0;
+    round * logArrayPtr = & logArray[0];
+
+    // To-do: fix this
+    // streampos begin;
+    // gameLog.seekp(ios_base::beg);
+    // begin = gameLog.tellp();
+    // gameLog.seekp(ios_base::end);
+    // if (gameLog.tellp() == begin) {
+    //     gameLog << "Player1, P1 Move, P1 Wins, Player2, P2 Move, P2 Wins, Winner";
+    // }
+
+    // gameLog.close();
+
+    readGameLog(filename, logArrayPtr, logIdx, gameNumPtr);
+
     while (userWins < playTo && compWins < playTo) {
         cout << endl << "Next round:" << endl;
         p1Choice = getChoice();
-        randIdx = rand() % 3;
-        p2Choice = possibleMoves[randIdx];
-        cout << username << " picks " << p1Choice << " and Computer picks " <<
+        if (numPlayers == 1) {
+            randIdx = rand() % 3;
+            p2Choice = possibleMoves[randIdx];
+        }
+        else {
+            cout << flush;
+            system("clear");
+            p2Choice = getChoice();
+        }
+        cout << p1Name << " picks " << p1Choice << " and " << p2Name << " picks " <<
             p2Choice << endl;
         winner = calculateWinner(p1Choice, p2Choice);
 
         if (winner == 0) {
             cout << "... A Tie." << endl;
             totalGames += 1;
+            whoWon = "Tie";
         }
         else if (winner == 1) {
-            cout << "... " << username << " wins!" << endl;
+            cout << "... " << p1Name << " wins!" << endl;
             totalGames += 1;
             userWins += 1;
+            whoWon = p1Name;
         }
         else if (winner == 2) {
-            cout << "... Computer wins!" << endl;
+            cout << "... " << p2Name << " wins!" << endl;
             totalGames += 1;
             compWins += 1;
+            whoWon = p2Name;
         }
 
-        printScores(username, userWins, compWins);
+        printScores(p1Name, p2Name, userWins, compWins);
+        currRound.p1Name = p1Name;
+        currRound.p1Move = p1Choice;
+        currRound.p1Wins = userWins;
+        currRound.p2Name = p2Name;
+        currRound.p2Move = p2Choice;
+        currRound.p2Wins = compWins;
+        currRound.winner = whoWon;
+
+        logArray[logIdx] = currRound;
+        logIdx++;
     }
 
     if (userWins > compWins) {
-        cout << username << " beat Computer:" << endl << "... won " << userWins
+        cout << p1Name << " beat Computer:" << endl << "... won " << userWins
         << " in " << totalGames << " rounds of rock-paper-scissors." << endl;
     }
     else {
-        cout << "Computer beat " << username << ":" << endl << "... won " <<
+        cout << "Computer beat " << p1Name << ":" << endl << "... won " <<
         compWins << " in " << totalGames << " rounds of rock-paper-scissors." <<
         endl;
     }
 
-    gameLog.close();
+    logGame(logArray, filename, logLen, gameNum);
+
     return 0;
 }
