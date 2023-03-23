@@ -20,7 +20,7 @@ struct round {
 string possibleMoves[3] = {"rock", "paper", "scissors"};
 
 string getChoice() {
-    /* Asks the user for their move and ensures it's valid */
+    // Asks the user for their move and ensures it's valid
     string move;
 
     while (true) {
@@ -39,6 +39,7 @@ string getChoice() {
 }
 
 void readGameLog(string filename, round *logArrayPtr, int logIdx, round *oldLogPtr) {
+    // reads in in all the saved games in the log
     ifstream readLog(filename);
     string inStr;
     string firstLine;
@@ -73,6 +74,7 @@ void readGameLog(string filename, round *logArrayPtr, int logIdx, round *oldLogP
             (logArrayPtr+logIdx)->p2Wins = tmp;
             (oldLogPtr+logIdx)->p2Wins = tmp;
             getline(readLog, inStr);
+            inStr.pop_back();
             (logArrayPtr+logIdx)->winner = inStr;
             (oldLogPtr+logIdx)->winner = inStr;
             logIdx++;
@@ -87,7 +89,7 @@ void readGameLog(string filename, round *logArrayPtr, int logIdx, round *oldLogP
 }
 
 int calculateWinner(string choice1, string choice2) {
-    /* Takes the moves of players 1 and 2 and checks to see who won */
+    // Takes the moves of players 1 and 2 and checks to see who won
     if (choice1 == choice2) {
         return 0;
     }
@@ -105,13 +107,12 @@ int calculateWinner(string choice1, string choice2) {
     }
 }
 
-int printScores(string p1Name, string p2Name, int userWins, int compWins) {
-    /* Prints out a scorecard of the wins after each round */
+void printScores(string p1Name, string p2Name, int userWins, int compWins) {
+    // Prints out a scorecard of the wins after each round
     cout << "-----------------------------------------" << endl;
     cout << p1Name << ": " << userWins << "          " << p2Name << ": " <<
         compWins << endl;
     cout << "-----------------------------------------" << endl << endl;
-    return 0;
 }
 
 // int logRound(ofstream gameLog, round *currRound) {
@@ -127,6 +128,7 @@ int printScores(string p1Name, string p2Name, int userWins, int compWins) {
 // }
 
 void logGame(round logArray[], string filename, int logLen, string gameTime) {
+    // records the round to the game log file
     ofstream gameLog(filename, ios::app);
     for (int i=0; i<logLen; i++) {
         round lookRound;
@@ -147,11 +149,52 @@ void logGame(round logArray[], string filename, int logLen, string gameTime) {
     }
 }
 
-void reviewGames(round *logArrayptr, int logIdx) {
-    string dates[logIdx] = {};
-    for (int i=0; i<logIdx; i++) {
-        if (!(find(dates.begin(), dates.end(), (logArrayptr+i)[0]))) {
-            dates[i] = (logArrayptr+i)[0];
+void reviewGames(round *logArrayptr, int logIdx, int logLen) {
+    // displays all the rounds from a timestamp, as chosen by the user here
+    string dates[logLen] = {};
+    bool dateFound = false;
+    int dateIdx = 0;
+    string dateInput;
+    int userDate;
+    string dateChosen;
+    round *currRound;
+    for (int i=0; i<logLen; i++) {
+        for (int j=0; j<logLen; j++) {
+            if ((logArrayptr+i)->gameTime == dates[j]) {
+                dateFound = true;
+                break;
+            }
+        }
+        if (dateFound == false) {
+            dates[dateIdx] = (logArrayptr+i)->gameTime;
+            dateIdx++;
+        }
+        dateFound = false;
+    }
+    cout << "Game Timestamps:" << endl;
+    for (int i=0; i<dateIdx; i++) {
+        cout << (i+1) << ". " << dates[i] << endl;
+    }
+    while (true) {
+        cout << "Which timestamp do you want to look at? " << flush;
+        cin >> dateInput;
+        cout << flush;
+        userDate = stoi(dateInput) - 1;
+        if (userDate >= 0 and userDate <= dateIdx) {
+            dateChosen = dates[userDate];
+            break;
+        }
+        else {
+            cout << "Not an available timestamp, please try again." << endl;
+        }
+    }
+    cout << "Showing games for: " << dateChosen << endl;
+    for (int i=0; i<logLen; i++) {
+        currRound = (logArrayptr+i);
+        if (currRound->gameTime == dateChosen) {
+            cout << "P1: " << currRound->p1Name << "\tP1 Move: " << currRound->p1Move << "\tP1 Wins: " << currRound->p1Wins << endl;
+            cout << "P2: " << currRound->p2Name << "\tP2 Move: " << currRound->p2Move << "\tP2 Wins: " << currRound->p2Wins << endl;
+            cout << "Winner: " << currRound->winner << endl << endl;
         }
     }
 }
@@ -176,12 +219,13 @@ int main() {
     int numPlayers;
     string printGame;
     time_t myTime = time(NULL);
-    string gameTime = ctime(&myTime);
-    gameTime.pop_back();
-    string userInput;
+    char userInput;
 
     filename = "gameLog.csv";
     // ofstream gameLog(filename, ios::app);
+
+    string gameTime = ctime(&myTime);
+    gameTime.pop_back();
 
     cout << "How many players (1 or 2): ";
     getline(cin, inputStr);
@@ -209,7 +253,7 @@ int main() {
     cout << "Let's see who can win " << playTo << " games first. Good luck!" <<
         endl;
 
-    const int logLen = playTo*10;
+    const int logLen = playTo*20;
     round logArray[logLen] = {};
     int logIdx = 0;
     round * logArrayPtr = &logArray[0];
@@ -235,14 +279,14 @@ int main() {
     readGameLog(filename, logArrayPtr, logIdx, oldLogPtr);
 
     while (true) {
-        cout << "Welcome to Rock-Paper-Scissors Deluxe! Please choose one of the following options:" << endl;
+        cout << endl << "Please choose one of the following options:" << endl;
         cout << "1. Play a New Game" << endl;
         cout << "2. Review Old Games" << endl;
         cout << "3. Quit" << endl;
-        getline(cin, userInput);
-
-
-        if (userInput == "1") {
+        cout << "-> " << flush;
+        cin >> userInput;
+        cout << flush;
+        if (userInput == '1') {
             while (userWins < playTo && compWins < playTo) {
                 cout << endl << "Next round:" << endl;
                 p1Choice = getChoice();
@@ -305,11 +349,14 @@ int main() {
 
             logGame(newLog, filename, logLen, gameTime);
         }
-        else if (userInput == "2")  {
-            reviewGames(logArrayPtr, logIdx);
+        else if (userInput == '2')  {
+            reviewGames(logArrayPtr, logIdx, logLen);
+        }
+        else if (userInput == '3') {
+            break;
         }
         else {
-            break;
+            cout << "That's not a valid option." << endl;
         }
     }
 

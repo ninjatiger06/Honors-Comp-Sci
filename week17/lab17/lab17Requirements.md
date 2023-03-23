@@ -10,7 +10,7 @@
 ## Tally: 10
 - [x] The game is set up to have either two human players or one computer player or two computer players.
 - [ ] Make it Rock-Paper-Scissors-Lizard-Spock.
-- [ ] The file always contains one and only one game transcript, stored as ASCII text.  The program can read a transcript from a file and show the game transcript to the user.
+- [x] The file always contains one and only one game transcript, stored as ASCII text.  The program can read a transcript from a file and show the game transcript to the user.
 - [x] The file can have multiple games, stored with some identifying information.  When the user is going to read from the file, they get to pick which game to read based on the identifying information.
 - [x] The file is in binary format, or in CSV format, tested to be recognized and readable by a spreadsheet program.
 - [x] Define one instance of one struct type.
