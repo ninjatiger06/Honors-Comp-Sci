@@ -21,25 +21,26 @@ Entry::Entry( long valIn) {
     pointer = NULL;
 }
 
-class Queue {
+class List {
     public:
-        Queue();
-        void enqueue(long item);
-        long dequeue();
+        List();
+        void insert(long item);
+        long pop(long idx);
         long peek();
         void dump();
+        long findAtIdx(long idx);
         Entry *front;
         Entry *back;
         long size;
 };
 
-Queue::Queue() {
+List::List() {
     front = NULL;
     back = NULL;
     size = 0;
 }
 
-void Queue::enqueue(long item) {
+void List::insert(long item) {
     Entry * newEntry = new Entry(item);
     if (size == 0) {
         front = newEntry;
@@ -52,21 +53,28 @@ void Queue::enqueue(long item) {
     size++;
 }
 
-long Queue::dequeue() {
-    long val = front -> val;
-    Entry *tmpPtr = this -> front;
-    front = front -> pointer;
+long List::pop(long idx) {
+    long val;
+    Entry *currEntry = front;
+    Entry *nextEntry;
+    for (int i=0; i<idx-1; i++) {
+        currEntry = currEntry -> pointer;
+    }
+    Entry *tmpPtr = currEntry;
+    nextEntry = currEntry -> pointer;
+    val = nextEntry -> val;
+    currEntry -> pointer = nextEntry -> pointer;
     size--;
     delete tmpPtr;
     return val;
 }
 
-long Queue::peek() {
+long List::peek() {
     long val = front -> val;
     return val;
 }
 
-void Queue::dump() {
+void List::dump() {
     Entry *currEntry = front;
     for (int i=0; i<size; i++) {
         cout << currEntry -> val << ", " << flush;
@@ -75,45 +83,40 @@ void Queue::dump() {
     cout << endl;
 }
 
+long List::findAtIdx(long idx) {
+    int currIdx = 0;
+    Entry *currEntry = front;
+    for (int i=0; i<idx; i++) {
+        currEntry = currEntry -> pointer;
+    }
+    return currEntry -> val;
+}
+
 int main() {
-    Queue myqueue;
+    List myList;
     long userInput;
     long peekVal;
+    long idxFind;
 
-    // cout << "Entry1: " << flush;
-    // // cin >> userInput;
-    // Entry entry1(1);
-
-    // cout << "Entry2: " << flush;
-    // // cin >> userInput;
-    // Entry entry2(2);
-
-    // cout << "Entry3: " << flush;
-    // // cin >> userInput;
-    // Entry entry3(3);
-
-    // cout << "Entry4: " << flush;
-    // // cin >> userInput;
-    // Entry entry4(4);
-    // cout << endl << endl;
-
-    myqueue.enqueue(1);
-    myqueue.dump();
+    myList.insert(1);
+    myList.dump();
     cout << endl;
-    myqueue.enqueue(2);
-    peekVal = myqueue.peek();
+    myList.insert(2);
+    peekVal = myList.peek();
     cout << peekVal << endl;
-    myqueue.dump();
+    myList.dump();
     cout << endl;
-    myqueue.dequeue();
-    myqueue.dump();
+    myList.pop(0);
+    myList.dump();
     cout << endl;
-    myqueue.enqueue(3);
-    myqueue.enqueue(4);
-    myqueue.dump();
+    myList.insert(3);
+    myList.insert(4);
+    myList.dump();
+    idxFind = myList.findAtIdx(2);
+    cout << idxFind << endl;
     cout << endl;
-    myqueue.dequeue();
-    myqueue.dump();
+    myList.pop(0);
+    myList.dump();
     cout << endl;
 
 }
