@@ -2,6 +2,12 @@
 #include<string>
 #include"queue.h"
 
+/*
+    Name: Jonas Pfefferman
+    Date: May 2023
+    Purpose: Provides functionality for the Queue and Entry classes' functions
+*/
+
 using namespace std;
 
 Entry::Entry() {

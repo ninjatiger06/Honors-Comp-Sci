@@ -1,6 +1,6 @@
 #include<string>
 /*
-    Name:
+    Name: Jonas Pfefferman and Patrick Rooney
     Date: Spring 2023
     Purpose: Implement a pointer-based binary search tree whose content is
         of data type long int.  Implement height-balancing using node 
@@ -42,6 +42,7 @@ class Tree {
             left has content smaller than this content, everything to the 
             right has larger content.  Silently ignore duplicated content. */
         void add_node(long content);
+        void delete_node(long delNode, Node* currNode);
         void dump_tree();
         void depth_dump(Node* currNode);
         bool search_tree(long num, Node* currNode);

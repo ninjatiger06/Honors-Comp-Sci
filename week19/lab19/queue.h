@@ -1,4 +1,9 @@
 #include<string>
+/*
+    Author: Jonas Pfefferman
+    Date: May 2023
+    Purpose: Defines the Queue and Entry classes
+*/
 
 class Entry {
     friend class Queue;

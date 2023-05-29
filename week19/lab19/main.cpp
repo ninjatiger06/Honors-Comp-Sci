@@ -1,5 +1,12 @@
 #include<iostream>
 #include "binary_tree.h"
+#include <typeinfo>
+
+/*
+    Name: Jonas Pfefferman and Patrick Rooney
+    Date: May 2023
+    Purpose: Creates a binary tree and tests basic functionality
+*/
 
 using namespace std;
 
@@ -13,9 +20,14 @@ int main() {
     tree.dump_tree();
     tree.depth_dump(tree.head);
     bool numFound = tree.search_tree(44, tree.head);
-    cout << numFound << endl;
     cout << "num: " << 44 << " numFound: " << numFound << endl;
+
+    // prints as either a 1 or 0, but numFound is in fact a bool
+    cout << typeid(numFound).name() << endl;
+    
     numFound = tree.search_tree(99, tree.head);
-    cout << numFound << endl;
     cout << "num: " << 99 << " numFound: " << numFound << endl;
+
+    tree.delete_node(21, tree.head);
+    tree.dump_tree();
 }
