@@ -1,5 +1,6 @@
 #include <iostream>
 #include<string>
+#include "math.h"
 #include "binary_tree.h"
 #include"queue.h"
 
@@ -179,31 +180,281 @@ bool Tree::search_tree(long num, Node* currNode) {
     // return false;
 }
 
+void Tree::draw_tree() {
+    // Uses the queue class to perform a breadth-first drawing of the tree
+    // Doesn't work super well, but kind of gets the point across (when it works)
+    Queue treeQ;
+    Node *currNode;
+    treeQ.enqueue(reinterpret_cast<long>(head));
+    long currIdx = 1;
+    long level = 0;
+    long onLine = pow (2, level);
+    while (treeQ.size > 0)
+    {
+        if (treeQ.peek() == -1) {
+            cout << "NULL     " << flush;
+            treeQ.dequeue();
+        }
+        else {
+            currNode = reinterpret_cast<Node *>(treeQ.dequeue());
+            // cout << currNode->content << " currIdx: " << currIdx << ", level: " << level << ", onLine: " << onLine << "     " << flush;
+            cout << currNode -> content << "     " << flush;
+            if (currIdx % 2 == 0) {
+                cout << "     " << flush;
+            }
+            if (currNode->left != NULL) {
+                treeQ.enqueue(reinterpret_cast<long>(currNode->left));
+            }
+            else {
+                treeQ.enqueue(-1);
+            }
+            if (currNode->right != NULL) {
+                treeQ.enqueue(reinterpret_cast<long>(currNode->right));
+            }
+            else {
+                treeQ.enqueue(-1);
+            }
+        }
+        currIdx++;
+        // cout << currIdx << endl;
+        if (currIdx > (onLine)) {
+            // cout << "here" << endl;
+            cout << endl;
+            level++;
+            onLine = pow(2, level);
+            currIdx = 1;
+        }
+    }
+    cout << endl;
+}
+
+void Tree::rotate_left(Node *rotating)
+{
+    // Rotates the tree to the left around a given unbalanced node
+    if (rotating == head)
+    {
+        head = rotating->right;
+        head->height = 0;
+        rotating->right = head->left;
+        head->left = rotating;
+        if (head->left->right != NULL)
+        {
+            head->left->right->height = 2;
+        }
+        if (rotating->left != NULL)
+        {
+            rotating->left->update_nodes_h(1);
+        }
+        if (head->right != NULL)
+        {
+            head->right->update_nodes_h(-1);
+        }
+        head->height_balance = 0;
+        head->left->height_balance = 0;
+        head->left->parent = head;
+        head->left->height = 1;
+        head->parent = NULL;
+    }
+    else
+    {
+        Node *new_top = rotating->right;
+
+        if (rotating->parent->right == rotating)
+        {
+            rotating->parent->right = new_top;
+        }
+        else
+        {
+            rotating->parent->left = new_top;
+        }
+        new_top->height--;
+        rotating->right = new_top->left;
+        new_top->left = rotating;
+        if (new_top->left->right != NULL)
+        {
+            new_top->left->right->parent = new_top->left;
+        }
+        if (rotating->left != NULL)
+        {
+            rotating->left->update_nodes_h(1);
+        }
+        if (new_top->right != NULL)
+        {
+            new_top->right->update_nodes_h(-1);
+        }
+        new_top->height_balance = 0;
+        new_top->left->height_balance = 0;
+        new_top->parent = rotating->parent;
+        rotating->height++;
+        new_top->left->parent = new_top;
+        new_top->update_nodes_b();
+    }
+}
+
+void Tree::rotate_right(Node *rotating)
+{
+    // Rotates the tree to the right around a given unbalanced node
+    if (Node::unbalanced == head)
+    {
+        head = Node::unbalanced->left;
+        head->height = 0;
+        Node::unbalanced->left = head->right;
+        head->right = Node::unbalanced;
+        if (head->right->left != NULL)
+        {
+            head->right->left->height = 2;
+        }
+        if (Node::unbalanced->right != NULL)
+        {
+            Node::unbalanced->right->update_nodes_h(1);
+        }
+        if (head->left != NULL)
+        {
+            head->left->update_nodes_h(-1);
+        }
+        head->height_balance = 0;
+        head->right->height_balance = 0;
+        head->right->parent = head;
+        head->right->height = 1;
+        head->parent = NULL;
+    }
+    else
+    {
+
+        Node *new_top = Node::unbalanced->left;
+        if (Node::unbalanced->parent->right == Node::unbalanced)
+        {
+            Node::unbalanced->parent->right = new_top;
+        }
+        else
+        {
+            Node::unbalanced->parent->left = new_top;
+        }
+        new_top->height--;
+        Node::unbalanced->left = new_top->right;
+        new_top->right = Node::unbalanced;
+        if (new_top->right->left != NULL)
+        {
+            new_top->right->left->parent = new_top->right;
+        }
+        if (Node::unbalanced->right != NULL)
+        {
+            Node::unbalanced->right->update_nodes_h(1);
+        }
+        if (new_top->left != NULL)
+        {
+            new_top->left->update_nodes_h(-1);
+        }
+        new_top->height_balance = 0;
+        new_top->right->height_balance = 0;
+        new_top->parent = Node::unbalanced->parent;
+        Node::unbalanced->height++;
+        Node::unbalanced->parent = new_top;
+        new_top->update_nodes_b();
+    }
+}
+
+void Tree::balance_tree() {
+    // Fully balances the tree such that the height_balance for any branch is never more than 1
+    if (Node::unbalanced != NULL)
+    {
+        if (Node::unbalanced->height_balance > 1)
+        {
+            if (Node::unbalanced->right->height_balance >= 0)
+            {
+                // Right Right unbalanced
+                rotate_left(Node::unbalanced);
+            }
+            else if (Node::unbalanced->right->height_balance < 0)
+            {
+                // Right Left unbalanced
+                rotate_left(Node::unbalanced->right);
+                rotate_right(Node::unbalanced);
+            }
+        }
+        else if (Node::unbalanced->height_balance < 1)
+        {
+
+            if (Node::unbalanced->left->height_balance <= 0)
+            {
+                // Left Left unbalanced
+                rotate_right(Node::unbalanced);
+            }
+            else if (Node::unbalanced->right->height_balance > 0)
+            {
+                // Left Right unbalanced
+                rotate_right(Node::unbalanced->right);
+                rotate_left(Node::unbalanced);
+            }
+        }
+        Node::unbalanced = NULL;
+    }
+}
+
 Node::Node() {
-    
+    left = NULL;
+    right = NULL;
+    parent = NULL;
+    content = 0;
+    height = 0;
+    height_balance = 0;
 }
 
 Node::Node(long numInput) {
     left = NULL;
     right = NULL;
-    content = numInput;
+    parent = NULL;
+    this -> content = numInput;
+    height = 0;
+    height_balance = 0;
 }
 
-// Patrick did not manage to get the height balance change working, so it has been left out
+bool Node::adjustment = false;
+Node *Node::unbalanced = NULL;
 
 void Node::add_left(long content) {
     /*Takes a given number and adds it as the left leaf of a node if that space
     is free. If not, it finds a free space*/
-    if (this -> left == NULL) {
-        Node * nodePtr = new Node(content);
-        this -> left = nodePtr;
+    if (left == NULL) {
+        Node *node_ptr = new Node(content);
+        left = node_ptr;
+        left->height = height + 1;
+        height_balance--;
+        if (right == NULL) {
+            adjustment = true;
+        }
+        node_ptr->parent = this;
     }
     else {
-        if (content < left -> content) {
-            left -> add_left(content);
+        if (content < left->content)
+        {
+            left->add_left(content);
+            if (left->height_balance < 0 && adjustment) {
+                height_balance--;
+            }
+            else {
+                adjustment = false;
+            }
         }
-        else if (content > left -> content) {
-            left -> add_right(content);
+        else if (content > left->content) {
+            left->add_right(content);
+            if (left->height_balance > 0 && adjustment) {
+                height_balance--;
+            }
+            else {
+                adjustment = false;
+            }
+        }
+        else {
+            adjustment = false;
+        }
+        if (height_balance > 1 || height_balance < -1) {
+            if (unbalanced == NULL) {
+                unbalanced = this;
+            }
+            else if (height > unbalanced->height) {
+                unbalanced = this;
+            }
         }
     }
 }
@@ -211,16 +462,68 @@ void Node::add_left(long content) {
 void Node::add_right(long content) {
     /*Takes a given number and adds it as the right leaf of a node if that space
     is free. If not, it finds a free space*/
-    if (this -> right == NULL) {
-            Node * nodePtr = new Node(content);
-            this -> right = nodePtr;
+    if (right == NULL) {
+        Node *node_ptr = new Node(content);
+        right = node_ptr;
+        right->height = height + 1;
+        height_balance++;
+        if (left == NULL) {
+            adjustment = true;
         }
+        node_ptr->parent = this;
+    }
     else {
-        if (content > right -> content) {
+        if (content < right->content)
+        {
+            right->add_left(content);
+            if (right->height_balance < 0 && adjustment) {
+                height_balance++;
+            }
+            else {
+                adjustment = false;
+            }
+        }
+        else if (content > right->content) {
             right->add_right(content);
+            if (right->height_balance > 0 && adjustment) {
+                height_balance++;
+            }
+            else {
+                adjustment = false;
+            }
         }
-        else if (content < right -> content) {
-            right -> add_left(content);
+        else {
+            adjustment = false;
         }
+        if (height_balance > 1 || height_balance < -1) {
+            if (unbalanced == NULL) {
+                unbalanced = this;
+            }
+            else if (height > unbalanced->height) {
+                unbalanced = this;
+            }
+        }
+    }
+}
+
+void Node::update_nodes_h(long change) {
+    height += change;
+    if (left != NULL) {
+        left->update_nodes_h(change);
+    }
+    if (right != NULL) {
+        right->update_nodes_h(change);
+    }
+}
+
+void Node::update_nodes_b() {
+    if (this == parent->right) {
+        parent->height_balance--;
+    }
+    else {
+        parent->height_balance++;
+    }
+    if (parent->parent != NULL) {
+        parent->update_nodes_b();
     }
 }

@@ -1,6 +1,7 @@
 #include<string>
+#include"queue.h"
 /*
-    Name: Jonas Pfefferman and Patrick Rooney
+    Name:
     Date: Spring 2023
     Purpose: Implement a pointer-based binary search tree whose content is
         of data type long int.  Implement height-balancing using node 
@@ -8,27 +9,28 @@
 */
 
 /* @brief Class to represent one node of a binary search tree. */
+
 class Node {
     friend class Tree;
     public:
         // The lowest unbalanced node in the tree this node is in
-        static Node *unbalanced;
+        static Node * unbalanced;        
         // Previous adjustment
         static bool adjustment;
         // Pointers to left and right child nodes.
         Node * left;
         Node * right;
         // Pointer to parent node
-        Node *parent;
+        Node * parent;
         // The actual content of this node.
         long content;
-        // Total height (number of levels of descendants) descendant nodes on each branch.
+        // Height of node and balance of height of children branches
         long height;
         long height_balance;
         // Default constructor, assigns 0 as its content.
         Node();
         // Constructor with content.
-        Node(long numInput);
+        Node(long content);
     private:
         /* Methods to add a child node directly to this node.  Intended to 
             be called by Tree::add_node(). */
@@ -51,12 +53,8 @@ class Tree {
             left has content smaller than this content, everything to the 
             right has larger content.  Silently ignore duplicated content. */
         void add_node(long content);
-        void delete_node(long delNode, Node* currNode);
         void dump_tree();
-        void depth_dump(Node* currNode);
-        bool search_tree(long num, Node* currNode);
-        void rotate_right(Node *rotating);
-        void rotate_left(Node *rotating);
         void balance_tree();
-        void draw_tree();
+        void rotate_right(Node * rotating);
+        void rotate_left(Node * rotating);
 };

@@ -28,6 +28,12 @@ int main() {
     numFound = tree.search_tree(99, tree.head);
     cout << "num: " << 99 << " numFound: " << numFound << endl;
 
-    tree.delete_node(21, tree.head);
+    // tree.delete_node(21, tree.head);
     tree.dump_tree();
+    tree.draw_tree();
+
+    tree.balance_tree();
+    
+    tree.dump_tree();
+    tree.draw_tree();
 }
